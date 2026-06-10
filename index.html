@@ -252,6 +252,9 @@ main{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
   box-shadow:0 0 0 2px #222, inset -3px -3px 0 rgba(0,0,0,.15)}
 .pokeball::after{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;border-radius:50%;
   transform:translate(-50%,-50%);background:#fff;box-shadow:0 0 0 2px #222}
+.pokeball.mini{display:inline-block;width:13px;height:13px;vertical-align:-1px;margin-right:4px;
+  box-shadow:0 0 0 1px #222}
+.pokeball.mini::after{width:5px;height:5px;box-shadow:0 0 0 1px #222}
 .cool-bar{height:14px;border-radius:7px;background:#54506c;overflow:hidden;box-shadow:inset 0 2px 0 rgba(0,0,0,.35);margin-top:8px}
 .cool-bar .fill{height:100%;background:linear-gradient(180deg,#ffe98a,#f8b830);transition:width .1s linear}
 .flee-bar .fill{background:linear-gradient(180deg,#ff9aa6,var(--hp-red))}
@@ -708,7 +711,7 @@ function spawnEnemy(){
   const img=$("enemySprite");
   img.classList.remove("faint");
   setSprite(img,frontAnim(id),id);
-  $("enemyName").textContent=dexName(id);
+  $("enemyName").innerHTML=(state.caught[id]?'<span class="pokeball mini" title="already in your Pokédex"></span>':"")+dexName(id);
   $("enemyLv").textContent="Lv"+enemy.lvl;
   $("enemyTypes").innerHTML=dexTypes(id).map(t=>typeBadge(t,true)).join(" ");
   updateEnemyBar();
@@ -999,7 +1002,7 @@ function catchHtml(){
       <div id="thrownBall" class="pokeball"></div>
     </div>
     <div class="wild-head">
-      <span class="wild-name">${dexName(enc.id)} <span style="font-family:'Press Start 2P';font-size:9px;color:#777">Lv${enc.lvl}</span></span>
+      <span class="wild-name">${state.caught[enc.id]?'<span class="pokeball mini" title="already in your Pokédex"></span>':""}${dexName(enc.id)} <span style="font-family:'Press Start 2P';font-size:9px;color:#777">Lv${enc.lvl}</span></span>
       <span>${dexTypes(enc.id).map(t=>typeBadge(t)).join(" ")}</span>
     </div>
     <div class="cool-bar flee-bar" title="time before it flees"><div class="fill" id="fleeFill" style="width:100%"></div></div>
