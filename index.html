@@ -126,41 +126,6 @@ main{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
   opacity:var(--ridge-op);
 }
 .platform{position:absolute;border-radius:50%;background:radial-gradient(closest-side,var(--plat1),var(--plat2) 70%,var(--plat3));box-shadow:inset 0 3px 0 rgba(255,255,255,.25), 0 3px 0 rgba(0,0,0,.12)}
-
-/* ---------- area themes (scene + grass strip) ---------- */
-.t-forest{--sky1:#86c074;--sky2:#aad898;--gnd1:#5a9a48;--gnd2:#4c8a3c;--gnd3:#3a7230;
-  --bk1:#2c6634;--bk2:#235a2b;--ridge-top:18%;--ridge-h:26%;
-  --plat1:#61a050;--plat2:#529244;--plat3:#447e38;--tuft1:#1f5e28;--tuft2:#194e21}
-.t-cave{--sky1:#4a3c55;--sky2:#5b4a66;--gnd1:#7a6488;--gnd2:#6a5578;--gnd3:#574668;
-  --bk1:#352a40;--bk2:#2c2235;--ridge-top:0%;--ridge-h:20%;--ridge-shape:var(--shape-spikes);--ridge-op:1;
-  --plat1:#8a7398;--plat2:#75618a;--plat3:#615078;--tuft1:#4e4058;--tuft2:#443a4e}
-.t-meadow{--sky1:#8fd8f8;--sky2:#c3ecfc;--gnd1:#a8dc6e;--gnd2:#8cca58;--gnd3:#70b444;
-  --bk1:#5aa868;--bk2:#4c9658;--ridge-top:24%;--ridge-h:22%;--ridge-shape:var(--shape-peaks);
-  --plat1:#9cd86a;--plat2:#84c454;--plat3:#6cae40}
-.t-docks{--sky1:#9adcf2;--sky2:#d4f0fa;--gnd1:#c89858;--gnd2:#b08048;--gnd3:#96683a;
-  --bk1:#3a8ac0;--bk2:#2f78ac;--ridge-top:36%;--ridge-h:11%;--ridge-shape:var(--shape-band);--ridge-op:1;
-  --plat1:#c8a060;--plat2:#b08850;--plat3:#987040;--tuft1:#2f78ac;--tuft2:#2a6c9c}
-.t-tunnel{--sky1:#2c2530;--sky2:#3a3140;--gnd1:#5c5260;--gnd2:#4c4450;--gnd3:#3c3640;
-  --bk1:#201a26;--bk2:#181420;--ridge-top:0%;--ridge-h:22%;--ridge-shape:var(--shape-spikes);--ridge-op:1;
-  --plat1:#6a5e70;--plat2:#584e60;--plat3:#484050;--tuft1:#38303e;--tuft2:#302a36}
-.t-city{--sky1:#a0d8ec;--sky2:#dcf2f8;--gnd1:#c0c4d0;--gnd2:#a8acb8;--gnd3:#8e92a0;
-  --bk1:#7888a0;--bk2:#68788e;--ridge-top:18%;--ridge-h:28%;--ridge-shape:var(--shape-skyline);--ridge-op:.9;
-  --plat1:#c8ccd8;--plat2:#b0b4c0;--plat3:#989cab;--tuft1:#3f8a4a;--tuft2:#357a40}
-.t-safari{--sky1:#ffd98a;--sky2:#ffeec2;--gnd1:#d8c878;--gnd2:#c0b060;--gnd3:#a89848;
-  --bk1:#8a9a4a;--bk2:#7a8a40;
-  --plat1:#e0d088;--plat2:#c8b870;--plat3:#b0a058;--tuft1:#9a8a3a;--tuft2:#8a7c32}
-.t-sea{--sky1:#9adcf2;--sky2:#d2f0fa;--gnd1:#58a8e0;--gnd2:#4292d0;--gnd3:#327fc0;
-  --bk1:#6ab8e8;--bk2:#5aa8da;--ridge-top:36%;--ridge-h:11%;--ridge-shape:var(--shape-band);--ridge-op:1;
-  --plat1:#eef8fc;--plat2:#cfe6f2;--plat3:#b2d6e8;--tuft1:#3a88c8;--tuft2:#3278b4}
-.t-volcano{--sky1:#4a2830;--sky2:#6e3438;--gnd1:#ff8a48;--gnd2:#803a30;--gnd3:#581f1c;
-  --bk1:#38201e;--bk2:#2e1a18;--ridge-top:18%;--ridge-h:28%;--ridge-shape:var(--shape-peaks);--ridge-op:1;
-  --plat1:#8a4438;--plat2:#763830;--plat3:#602c26;--tuft1:#5e2a22;--tuft2:#50241e}
-.t-mountain{--sky1:#b8ccdc;--sky2:#dde8ee;--gnd1:#9a8e84;--gnd2:#867a70;--gnd3:#6e645c;
-  --bk1:#5e6e80;--bk2:#506072;--ridge-top:16%;--ridge-h:30%;--ridge-shape:var(--shape-peaks);--ridge-op:.95;
-  --plat1:#a89a8e;--plat2:#92867a;--plat3:#7c7268;--tuft1:#5c5248;--tuft2:#4e463e}
-.t-mystic{--sky1:#2c2348;--sky2:#3c3060;--gnd1:#5a4a80;--gnd2:#4c3e6e;--gnd3:#3c305a;
-  --bk1:#221a38;--bk2:#1a1430;--ridge-top:0%;--ridge-h:22%;--ridge-shape:var(--shape-spikes);--ridge-op:1;
-  --plat1:#6a5890;--plat2:#5a4a7e;--plat3:#4a3c68;--tuft1:#352a52;--tuft2:#2d2346}
 .platform.enemy-p{width:240px;height:64px;right:42px;top:158px}
 .platform.player-p{width:280px;height:74px;left:26px;bottom:8px}
 .zone-tag{
@@ -245,7 +210,6 @@ main{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
 .move-btn.sel{background:linear-gradient(180deg,#fff3c4,#ffd96b);box-shadow:0 0 0 3px var(--red),0 3px 0 2px rgba(0,0,0,.2)}
 .move-btn .mv-nm{font-family:'Press Start 2P';font-size:9px;text-transform:uppercase;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .move-btn .mv-meta{display:flex;align-items:center;gap:8px;font-size:16px;color:#777;width:100%}
-.stab{font-family:'Press Start 2P';font-size:6px;color:#fff;background:var(--blue);padding:3px 4px 2px;border-radius:3px;font-style:normal}
 .eff{font-family:'Press Start 2P';font-size:8px;margin-left:auto}
 .eff.up{color:#2e9c46}.eff.dn{color:#c08a00}.eff.zero{color:#c03028}
 
@@ -423,6 +387,44 @@ main{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
   to{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) rotate(160deg);opacity:0}}
 .evo-text{font-size:23px;min-height:34px;line-height:1.2}
 .evo-skip{font-size:15px;color:#999;margin-top:10px}
+
+/* ---------- area themes (scene + grass strip) ----------
+   Declared last so they override the defaults set on .scene/.grass-strip. */
+.t-forest{--sky1:#86c074;--sky2:#aad898;--gnd1:#5a9a48;--gnd2:#4c8a3c;--gnd3:#3a7230;
+  --bk1:#2c6634;--bk2:#235a2b;--ridge-top:18%;--ridge-h:26%;
+  --plat1:#61a050;--plat2:#529244;--plat3:#447e38;--tuft1:#1f5e28;--tuft2:#194e21}
+.t-cave{--sky1:#4a3c55;--sky2:#5b4a66;--gnd1:#7a6488;--gnd2:#6a5578;--gnd3:#574668;
+  --bk1:#352a40;--bk2:#2c2235;--ridge-top:0%;--ridge-h:20%;--ridge-shape:var(--shape-spikes);--ridge-op:1;
+  --plat1:#8a7398;--plat2:#75618a;--plat3:#615078;--tuft1:#4e4058;--tuft2:#443a4e}
+.t-meadow{--sky1:#8fd8f8;--sky2:#c3ecfc;--gnd1:#a8dc6e;--gnd2:#8cca58;--gnd3:#70b444;
+  --bk1:#5aa868;--bk2:#4c9658;--ridge-top:24%;--ridge-h:22%;--ridge-shape:var(--shape-peaks);
+  --plat1:#9cd86a;--plat2:#84c454;--plat3:#6cae40}
+.t-docks{--sky1:#9adcf2;--sky2:#d4f0fa;--gnd1:#c89858;--gnd2:#b08048;--gnd3:#96683a;
+  --bk1:#3a8ac0;--bk2:#2f78ac;--ridge-top:36%;--ridge-h:11%;--ridge-shape:var(--shape-band);--ridge-op:1;
+  --plat1:#c8a060;--plat2:#b08850;--plat3:#987040;--tuft1:#2f78ac;--tuft2:#2a6c9c}
+.t-tunnel{--sky1:#2c2530;--sky2:#3a3140;--gnd1:#5c5260;--gnd2:#4c4450;--gnd3:#3c3640;
+  --bk1:#201a26;--bk2:#181420;--ridge-top:0%;--ridge-h:22%;--ridge-shape:var(--shape-spikes);--ridge-op:1;
+  --plat1:#6a5e70;--plat2:#584e60;--plat3:#484050;--tuft1:#38303e;--tuft2:#302a36}
+.t-city{--sky1:#a0d8ec;--sky2:#dcf2f8;--gnd1:#c0c4d0;--gnd2:#a8acb8;--gnd3:#8e92a0;
+  --bk1:#7888a0;--bk2:#68788e;--ridge-top:18%;--ridge-h:28%;--ridge-shape:var(--shape-skyline);--ridge-op:.9;
+  --plat1:#c8ccd8;--plat2:#b0b4c0;--plat3:#989cab;--tuft1:#3f8a4a;--tuft2:#357a40}
+.t-safari{--sky1:#ffd98a;--sky2:#ffeec2;--gnd1:#d8c878;--gnd2:#c0b060;--gnd3:#a89848;
+  --bk1:#8a9a4a;--bk2:#7a8a40;
+  --plat1:#e0d088;--plat2:#c8b870;--plat3:#b0a058;--tuft1:#9a8a3a;--tuft2:#8a7c32}
+.t-sea{--sky1:#9adcf2;--sky2:#d2f0fa;--gnd1:#58a8e0;--gnd2:#4292d0;--gnd3:#327fc0;
+  --bk1:#6ab8e8;--bk2:#5aa8da;--ridge-top:36%;--ridge-h:11%;--ridge-shape:var(--shape-band);--ridge-op:1;
+  --plat1:#eef8fc;--plat2:#cfe6f2;--plat3:#b2d6e8;--tuft1:#3a88c8;--tuft2:#3278b4}
+.t-volcano{--sky1:#4a2830;--sky2:#6e3438;--gnd1:#ff8a48;--gnd2:#803a30;--gnd3:#581f1c;
+  --bk1:#38201e;--bk2:#2e1a18;--ridge-top:18%;--ridge-h:28%;--ridge-shape:var(--shape-peaks);--ridge-op:1;
+  --plat1:#8a4438;--plat2:#763830;--plat3:#602c26;--tuft1:#5e2a22;--tuft2:#50241e}
+.t-mountain{--sky1:#b8ccdc;--sky2:#dde8ee;--gnd1:#9a8e84;--gnd2:#867a70;--gnd3:#6e645c;
+  --bk1:#5e6e80;--bk2:#506072;--ridge-top:16%;--ridge-h:30%;--ridge-shape:var(--shape-peaks);--ridge-op:.95;
+  --plat1:#a89a8e;--plat2:#92867a;--plat3:#7c7268;--tuft1:#5c5248;--tuft2:#4e463e}
+.t-mystic{--sky1:#2c2348;--sky2:#3c3060;--gnd1:#5a4a80;--gnd2:#4c3e6e;--gnd3:#3c305a;
+  --bk1:#221a38;--bk2:#1a1430;--ridge-top:0%;--ridge-h:22%;--ridge-shape:var(--shape-spikes);--ridge-op:1;
+  --plat1:#6a5890;--plat2:#5a4a7e;--plat3:#4a3c68;--tuft1:#352a52;--tuft2:#2d2346}
+/* readable "quiet" text on dark themes */
+.t-cave .quiet-txt,.t-tunnel .quiet-txt,.t-mystic .quiet-txt,.t-volcano .quiet-txt{color:rgba(255,255,255,.55)!important;text-shadow:none!important}
 
 ::-webkit-scrollbar{width:12px;height:12px}
 ::-webkit-scrollbar-track{background:#d8dcea;border-radius:6px}
@@ -628,6 +630,20 @@ const ZONES=[
 ];
 /* visual theme per zone, matching its geography */
 const ZONE_THEMES=["route","forest","cave","meadow","docks","tunnel","city","safari","sea","volcano","mountain","mystic"];
+const SEARCH_FLAVOR={
+route:{q:"…the grass is quiet…",b:"🔍 SEARCH THE GRASS"},
+forest:{q:"…the grass is quiet…",b:"🔍 SEARCH THE GRASS"},
+meadow:{q:"…the grass is quiet…",b:"🔍 SEARCH THE GRASS"},
+safari:{q:"…the savanna is still…",b:"🔍 SEARCH THE SAVANNA"},
+cave:{q:"…the cave is silent…",b:"🔍 SEARCH THE CAVE"},
+tunnel:{q:"…the tunnel is silent…",b:"🔍 SEARCH THE TUNNEL"},
+mystic:{q:"…the cave is silent…",b:"🔍 SEARCH THE CAVE"},
+docks:{q:"…the pier is quiet…",b:"🔍 SEARCH THE PIER"},
+city:{q:"…the streets are calm…",b:"🔍 SEARCH THE STREETS"},
+sea:{q:"…the sea is calm…",b:"🔍 SURF THE WAVES"},
+volcano:{q:"…the lab is quiet…",b:"🔍 SEARCH THE LAB"},
+mountain:{q:"…the path is still…",b:"🔍 SEARCH THE ROCKS"},
+};
 const TIER_WEIGHT=[0,46,28,16,7,1.6];
 const TIER_CATCH=[0,.55,.35,.20,.09,.025];
 const BALLS={
@@ -955,7 +971,6 @@ function renderMoves(){
   const defT=enemy?dexTypes(enemy.id):null;
   menu.innerHTML=act.moves.map((mi,i)=>{
     const mv=M[mi];
-    const stab=dexTypes(act.id).includes(mv[1]);
     let effTag="";
     if(defT){
       const eff=effMult(mv[1],defT);
@@ -964,7 +979,7 @@ function renderMoves(){
       else if(eff<1)effTag=`<span class="eff dn">×${eff}</span>`;
     }
     return `<button class="move-btn ${i===act.sel?"sel":""}" data-move="${i}" title="attack with ${mv[0]}">
-      <span class="mv-nm">${mv[0]}${stab?'<em class="stab">STAB</em>':""}</span>
+      <span class="mv-nm">${mv[0]}</span>
       <span class="mv-meta">${typeBadge(mv[1],true)}<span>POW ${mv[2]}</span>${effTag}</span>
     </button>`;
   }).join("");
@@ -1142,11 +1157,11 @@ function catchHtml(){
   }else{
     inner=`
     <div class="grass-strip t-${ZONE_THEMES[state.zone]}" id="grassStrip">
-      <div style="z-index:4;margin-bottom:60px;font-family:'Press Start 2P';font-size:10px;color:rgba(20,40,16,.65);text-align:center;line-height:2;text-shadow:0 0 4px rgba(255,255,255,.5)">
-        …the grass is quiet…
+      <div class="quiet-txt" style="z-index:4;margin-bottom:60px;font-family:'Press Start 2P';font-size:10px;color:rgba(20,40,16,.65);text-align:center;line-height:2">
+        ${SEARCH_FLAVOR[ZONE_THEMES[state.zone]].q}
       </div>
     </div>
-    <button class="btn blue big" id="searchBtn" style="width:100%;margin-top:12px">🔍 SEARCH THE GRASS</button>
+    <button class="btn blue big" id="searchBtn" style="width:100%;margin-top:12px">${SEARCH_FLAVOR[ZONE_THEMES[state.zone]].b}</button>
     <div class="cool-bar" title="search cooldown"><div class="fill" id="coolFill" style="width:0%"></div></div>`;
   }
   return inner+`
