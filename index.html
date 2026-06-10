@@ -149,6 +149,7 @@ main{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
   75%{transform:translateX(9px);filter:brightness(2.4) saturate(.2)}}
 #enemySprite.faint{animation:faint .55s steps(5) forwards}
 @keyframes faint{to{transform:translateY(70px);opacity:0}}
+#playerSprite.hit{animation:hitshake .25s steps(4)}
 
 .statbox{
   position:absolute;z-index:6;background:var(--paper);border-radius:6px;padding:7px 10px 8px;min-width:215px;
@@ -280,6 +281,17 @@ main{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
 .zone-item.locked{opacity:.62;background:#dcdce4}
 .zone-item .zl{font-family:'Press Start 2P';font-size:8px;background:var(--blue);color:#fff;padding:4px 6px 3px;border-radius:4px}
 .zone-item .lock{margin-left:auto;font-size:16px;color:#7a4a16;text-align:right;line-height:1}
+.zcount{margin-left:auto;font-family:'Press Start 2P';font-size:8px;color:#5a6080;background:#eef0f8;padding:4px 6px 3px;border-radius:4px;box-shadow:0 0 0 1px #b8bdd2;white-space:nowrap}
+.zcount.done{color:#a3540a;background:#ffe9a8;box-shadow:0 0 0 1px #d8a020}
+
+/* ---------- gym panel ---------- */
+.gym-panel{margin-top:12px;background:linear-gradient(90deg,#fff3c4,#ffe9a8);border-radius:6px;padding:10px 12px;
+  box-shadow:0 0 0 2px var(--frame-dark);display:none}
+.gym-panel.fighting{background:linear-gradient(90deg,#ffd9c4,#ffb8a0)}
+.gym-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:space-between}
+.gym-nm{font-family:'Press Start 2P';font-size:9px;line-height:2;flex:1;min-width:0}
+.gym-won{color:#2e9c46;display:block;font-size:8px}
+.gym-perk{color:#8a6d1a;display:block;font-size:8px}
 
 /* thrown ball animation */
 #thrownBall{position:absolute;z-index:40;left:50%;bottom:18px;display:none;--bt:#e3350d}
@@ -442,6 +454,7 @@ main{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
     <div class="hud">
       <div class="hud-chip"><span class="money-ico"></span><span id="hudMoney">0</span></div>
       <div class="hud-chip">DEX <span id="hudDex" style="color:var(--red)">0</span>/151</div>
+      <div class="hud-chip" id="hudBadgeChip" title="Gym badges">🏅 <span id="hudBadges" style="color:#a3540a">0</span>/8</div>
       <div class="hud-chip">KOs <span id="hudKos" style="color:var(--blue)">0</span></div>
       <button class="icon-btn" id="muteBtn" title="toggle sound">♪ ON</button>
       <button class="icon-btn" id="resetBtn" title="erase save">NEW GAME</button>
@@ -467,6 +480,11 @@ main{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
           </div>
           <div class="statbox player-s">
             <div class="row1"><span class="nm" id="playerName">—</span><span class="lv" id="playerLv">Lv?</span></div>
+            <div id="playerHpWrap" style="display:none">
+              <div class="bar-label">HP</div>
+              <div class="bar hp" id="playerHpBar"><div class="fill" id="playerHpFill" style="width:100%"></div></div>
+              <div class="hp-text" id="playerHpText"></div>
+            </div>
             <div class="bar-label b">EXP</div>
             <div class="bar exp"><div class="fill" id="playerExpFill" style="width:0%"></div></div>
             <div class="hp-text" id="playerExpText"></div>
@@ -476,6 +494,7 @@ main{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
           <button class="btn primary big" id="trainBtn">⚔ TRAIN!</button>
           <button class="btn" id="swapFoe" title="find a different sparring partner" style="font-size:9px">SWAP<br>FOE</button>
         </div>
+        <div class="gym-panel" id="gymPanel"></div>
         <div class="move-menu" id="moveMenu"></div>
         <div class="stat-strip">
           <span>Move DMG <b id="stClick">0</b></span>
@@ -625,20 +644,42 @@ link:{name:"Link Cable",icon:"🔗",cost:12e4,desc:"Trade-evolves Kadabra, Macho
 tutor:{name:"Move Tutor",icon:"📖",cost:1e4,desc:"Teach a Pokémon any move its form can know at its level — including forgotten ones."},
 };
 
+/* badge: index into GYMS whose badge is required to unlock the zone */
 const ZONES=[
 {name:"Route 1",lvl:4,pool:[16,19,21],dex:0,cost:0},
 {name:"Viridian Forest",lvl:7,pool:[10,13,43,69,25],dex:4,cost:1500},
-{name:"Mt. Moon",lvl:12,pool:[41,74,46,27,35],dex:9,cost:8e3},
-{name:"Cerulean Fields",lvl:17,pool:[63,23,29,32,39,56],dex:16,cost:25e3},
+{name:"Mt. Moon",lvl:12,pool:[41,74,46,27,35],dex:9,cost:8e3,badge:0},
+{name:"Cerulean Fields",lvl:17,pool:[63,23,29,32,39,56],dex:16,cost:25e3,badge:1},
 {name:"Vermilion Docks",lvl:23,pool:[50,52,96,81,100,83],dex:25,cost:8e4},
-{name:"Rock Tunnel",lvl:29,pool:[66,95,92,104,109,88],dex:35,cost:25e4},
+{name:"Rock Tunnel",lvl:29,pool:[66,95,92,104,109,88],dex:35,cost:25e4,badge:2},
 {name:"Celadon City",lvl:35,pool:[58,37,133,106,107,122,137],dex:46,cost:8e5},
-{name:"Safari Zone",lvl:42,pool:[102,111,113,115,123,127,128,114,108,84,48],dex:58,cost:2.5e6},
-{name:"Seafoam Isles",lvl:50,pool:[72,116,118,120,90,98,129,54,60,86,79,131,124],dex:72,cost:8e6},
-{name:"Cinnabar Lab",lvl:58,pool:[77,126,132,138,140,142,125],dex:88,cost:2.5e7},
-{name:"Victory Road",lvl:67,pool:[147,143,144,145,146],dex:102,cost:8e7},
-{name:"Cerulean Cave",lvl:75,pool:[1,4,7,150,151],dex:118,cost:3e8},
+{name:"Safari Zone",lvl:42,pool:[102,111,113,115,123,127,128,114,108,84,48],dex:58,cost:2.5e6,badge:3},
+{name:"Seafoam Isles",lvl:50,pool:[72,116,118,120,90,98,129,54,60,86,79,131,124],dex:72,cost:8e6,badge:4},
+{name:"Cinnabar Lab",lvl:58,pool:[77,126,132,138,140,142,125],dex:88,cost:2.5e7,badge:5},
+{name:"Victory Road",lvl:67,pool:[147,143,144,145,146],dex:102,cost:8e7,badge:6},
+{name:"Cerulean Cave",lvl:75,pool:[1,4,7,150,151],dex:118,cost:3e8,badge:7},
 ];
+/* gym leaders — challengeable from `zone`; team: [dexId, lvl]; badge perks are
+   permanent and wired into the multiplier helpers below */
+const GYMS=[
+{leader:"Brock",gymName:"Pewter Gym",badge:"Boulder",type:"rock",zone:1,reward:5e3,
+ perk:"+25% move damage",team:[[74,11],[95,13]]},
+{leader:"Misty",gymName:"Cerulean Gym",badge:"Cascade",type:"water",zone:2,reward:2e4,
+ perk:"+20% catch chance",team:[[120,15],[121,17]]},
+{leader:"Lt. Surge",gymName:"Vermilion Gym",badge:"Thunder",type:"electric",zone:4,reward:1e5,
+ perk:"+25% auto-attack speed",team:[[100,25],[25,26],[26,28]]},
+{leader:"Erika",gymName:"Celadon Gym",badge:"Rainbow",type:"grass",zone:6,reward:1e6,
+ perk:"+25% EXP",team:[[71,38],[114,37],[45,40]]},
+{leader:"Koga",gymName:"Fuchsia Gym",badge:"Soul",type:"poison",zone:7,reward:4e6,
+ perk:"+50% passive income",team:[[88,45],[89,46],[110,48]]},
+{leader:"Sabrina",gymName:"Saffron Gym",badge:"Marsh",type:"psychic",zone:8,reward:1.5e7,
+ perk:"-25% search cooldown",team:[[64,53],[122,53],[49,54],[65,56]]},
+{leader:"Blaine",gymName:"Cinnabar Gym",badge:"Volcano",type:"fire",zone:9,reward:5e7,
+ perk:"+50% money from KOs",team:[[77,60],[78,62],[59,65]]},
+{leader:"Giovanni",gymName:"Viridian Gym",badge:"Earth",type:"ground",zone:10,reward:2e8,
+ perk:"+50% move damage",team:[[111,70],[51,71],[31,72],[34,74]]},
+];
+const GYM_HP_MULT=4, GYM_ATK_MULT=4, GYM_ATK_INTERVAL=2000;
 /* visual theme per zone, matching its geography */
 const ZONE_THEMES=["route","forest","cave","meadow","docks","tunnel","city","safari","sea","volcano","mountain","mystic"];
 const SEARCH_FLAVOR={
@@ -688,7 +729,7 @@ const SAVE_KEY="pokeidle-kanto-v1";
 let state=null;
 function freshState(){return{
   money:0,balls:{poke:5,great:0,ultra:0,master:0},items:{fire:0,water:0,thunder:0,leaf:0,moon:0,link:0,tutor:0},
-  upg:{},zone:0,unlocked:[true],
+  upg:{},zone:0,unlocked:[true],badges:{},
   party:[],active:0,pc:[],caught:{},
   stats:{kos:0,catches:0,clicks:0,start:Date.now()},
   muted:false,tab:"catch",lastSeen:Date.now()
@@ -700,6 +741,7 @@ function load(){
   // migrations / fixups for older saves
   state.items=Object.assign({fire:0,water:0,thunder:0,leaf:0,moon:0,link:0,tutor:0},state.items||{});
   state.balls=Object.assign({poke:5,great:0,ultra:0,master:0},state.balls||{});
+  state.badges=state.badges||{};
   [...state.party,...state.pc].forEach(initMoves);
 }
 
@@ -720,17 +762,21 @@ function fmt(n){
 const lv=id=>state.upg[id]||0;
 const dexCount=()=>Object.keys(state.caught).length;
 const dexBonus=()=>1+0.05*dexCount();
+const hasBadge=i=>!!state.badges[i];
+const badgeCount=()=>GYMS.reduce((n,_,i)=>n+(hasBadge(i)?1:0),0);
 const moneyMult=()=>(1+0.25*lv("amulet"))*dexBonus();
-const expMult=()=>(1+0.2*lv("protein"))*dexBonus();
+const expMult=()=>(1+0.2*lv("protein"))*dexBonus()*(hasBadge(3)?1.25:1);
 const activeMon=()=>state.party[state.active];
-const autoRate=()=>lv("school")*0.25;
+const autoRate=()=>lv("school")*0.25*(hasBadge(2)?1.25:1);
 const toNext=l=>Math.floor(10*Math.pow(l,1.8));
 const zone=()=>ZONES[state.zone];
 const enemyMaxHp=zl=>Math.floor(15*Math.pow(zl,1.95));
-const koMoney=zl=>Math.floor(2.2*Math.pow(zl,2.2)*moneyMult());
+const monMaxHp=l=>Math.floor(15*Math.pow(l,1.95));
+const koMoney=zl=>Math.floor(2.2*Math.pow(zl,2.2)*moneyMult()*(hasBadge(6)?1.5:1));
 const koExp=zl=>Math.floor(5*zl*expMult());
-const passiveIncome=()=>state.party.reduce((s,m)=>s+m.lvl,0)*0.2*moneyMult();
-const searchCooldown=()=>8*Math.pow(0.92,lv("shoes"));
+const passiveIncome=()=>state.party.reduce((s,m)=>s+m.lvl,0)*0.2*moneyMult()*(hasBadge(4)?1.5:1);
+const searchCooldown=()=>8*Math.pow(0.92,lv("shoes"))*(hasBadge(5)?0.75:1);
+const zoneCaught=i=>ZONES[i].pool.filter(id=>state.caught[id]).length;
 function upgCost(u){return Math.floor(u.base*Math.pow(u.mult,lv(u.id)));}
 function weightedPick(pool){
   const ws=pool.map(id=>TIER_WEIGHT[dexTier(id)]);
@@ -754,7 +800,7 @@ function initMoves(mon){
 }
 function moveDamage(mon,mi,defTypes){
   const mv=M[mi];
-  const base=mon.lvl*2*(1+lv("macho"));
+  const base=mon.lvl*2*(1+lv("macho"))*(1+(hasBadge(0)?.25:0)+(hasBadge(7)?.5:0));
   const stab=dexTypes(mon.id).includes(mv[1])?1.5:1;
   const eff=effMult(mv[1],defTypes);
   return{dmg:eff===0?0:Math.max(1,Math.round(base*(mv[2]/50)*stab*eff)),eff,mv};
@@ -927,14 +973,147 @@ function clickAttack(){
 }
 function defeatEnemy(){
   enemyDead=true;
-  const z=zone(),m=koMoney(z.lvl),xp=koExp(z.lvl);
+  const elvl=gym?enemy.lvl:zone().lvl,m=koMoney(elvl),xp=koExp(elvl);
   state.money+=m;state.stats.kos++;
   sfx.ko();setTimeout(sfx.coin,180);
   $("enemySprite").classList.add("faint");
   floatText("+₽"+fmt(m),"coin-float",$("scene").clientWidth-220+rnd(60),130);
   grantExp(xp);
-  setTimeout(()=>{enemyDead=false;spawnEnemy();},650);
+  if(gym){
+    gym.idx++;
+    const done=gym.idx>=GYMS[gym.gi].team.length;
+    setTimeout(()=>{
+      enemyDead=false;
+      if(!gym){spawnEnemy();return;} // forfeited mid-faint
+      if(done)gymVictory();
+      else{gymSpawnNext();renderGymPanel();}
+    },650);
+  }else setTimeout(()=>{enemyDead=false;spawnEnemy();},650);
   dirty=true;
+}
+
+/* ===================== GYM BATTLES ===================== */
+let gym=null; // {gi, idx, partyHp:[], nextAtkAt}
+const gymForZone=i=>GYMS.findIndex(g=>g.zone===i);
+function startGym(gi){
+  if(gym||!state.party.length)return;
+  const g=GYMS[gi];
+  gym={gi,idx:0,partyHp:state.party.map(m=>monMaxHp(m.lvl)),nextAtkAt:Date.now()+GYM_ATK_INTERVAL+500};
+  log(`🏅 You challenge <b>${g.leader}</b> of ${g.gymName}! ${g.leader} sends out ${g.team.length} Pokémon — your whole party fights, and they fight back!`);
+  sfx.lvl();
+  gymSpawnNext();
+  renderGymPanel();updatePlayerHpUI();movesDirty=true;
+}
+function gymSpawnNext(){
+  const g=GYMS[gym.gi],[id,mlvl]=g.team[gym.idx];
+  const hp=enemyMaxHp(mlvl)*GYM_HP_MULT;
+  enemy={id,lvl:mlvl,hp,max:hp};
+  const img=$("enemySprite");
+  img.classList.remove("faint");
+  setSprite(img,frontAnim(id),id);
+  $("enemyName").innerHTML="🏅 "+g.leader.toUpperCase()+"'s "+dexName(id);
+  $("enemyLv").textContent="Lv"+mlvl;
+  $("enemyTypes").innerHTML=dexTypes(id).map(t=>typeBadge(t,true)).join(" ");
+  updateEnemyBar();
+  movesDirty=true;
+}
+/* leader AI: strongest learnset move vs the defender's types (no trainer-gear scaling) */
+function leaderBestHit(foe,defTypes){
+  let best=1;
+  for(const mi of learnableAt(foe.id,foe.lvl)){
+    const mv=M[mi];
+    const stab=dexTypes(foe.id).includes(mv[1])?1.5:1;
+    const d=Math.round(foe.lvl*2*(mv[2]/50)*stab*effMult(mv[1],defTypes)*GYM_ATK_MULT);
+    if(d>best)best=d;
+  }
+  return best;
+}
+function leaderAttack(){
+  const act=activeMon();
+  if(!act)return;
+  const dmg=leaderBestHit(enemy,dexTypes(act.id));
+  gym.partyHp[state.active]-=dmg;
+  const ps=$("playerSprite");ps.classList.remove("hit");void ps.offsetWidth;ps.classList.add("hit");
+  floatText("-"+fmt(dmg),"dmg-float",110+rnd(80),170+rnd(40));
+  sfx.wob();
+  if(gym.partyHp[state.active]<=0){
+    gym.partyHp[state.active]=0;
+    log(`${dexName(act.id)} fainted!`);
+    const next=state.party.findIndex((m,i)=>gym.partyHp[i]>0);
+    if(next<0){gymDefeat();return;}
+    state.active=next;
+    log(`Go, <b>${dexName(state.party[next].id)}</b>!`);
+    refreshPlayerSprite();updatePlayerPanel();movesDirty=true;
+  }
+  updatePlayerHpUI();
+}
+function gymVictory(){
+  const g=GYMS[gym.gi],first=!hasBadge(gym.gi);
+  const cash=first?g.reward:Math.floor(g.reward/5);
+  state.money+=cash;
+  if(first){
+    state.badges[gym.gi]=true;
+    log(`🏆 You defeated <b>${g.leader}</b>! You received the <b>${g.badge} Badge</b> (${g.perk}) and ₽${fmt(cash)}!`);
+    sfx.evo();
+  }else{
+    log(`🏆 Rematch won! ${g.leader} hands you ₽${fmt(cash)}.`);
+    sfx.catchIt();
+  }
+  floatText("+₽"+fmt(cash),"coin-float",$("scene").clientWidth/2-40,120);
+  endGym();
+}
+function gymDefeat(){
+  log(`💀 Your team was wiped out… <b>${GYMS[gym.gi].leader}</b> wins this round. Train up and try again!`);
+  sfx.fail();
+  endGym();
+}
+function forfeitGym(quiet){
+  if(!gym)return;
+  if(!quiet)log("You fled the gym battle!");
+  endGym();
+}
+function endGym(){
+  gym=null;
+  enemyDead=false;
+  spawnEnemy();
+  renderGymPanel();updatePlayerHpUI();updateHud();
+  movesDirty=true;dirty=true;renderTab();
+}
+function updatePlayerHpUI(){
+  const wrap=$("playerHpWrap");
+  const act=activeMon();
+  if(!gym||!act){wrap.style.display="none";return;}
+  wrap.style.display="block";
+  const max=monMaxHp(act.lvl),hp=Math.max(0,Math.min(max,gym.partyHp[state.active]));
+  const pct=max?hp/max*100:0;
+  $("playerHpFill").style.width=pct+"%";
+  const bar=$("playerHpBar");
+  bar.classList.toggle("warn",pct<=50&&pct>20);
+  bar.classList.toggle("danger",pct<=20);
+  $("playerHpText").textContent=fmt(hp)+" / "+fmt(max);
+}
+function renderGymPanel(){
+  const el=$("gymPanel");
+  const gi=gym?gym.gi:gymForZone(state.zone);
+  if(gi<0){el.style.display="none";el.innerHTML="";return;}
+  const g=GYMS[gi];
+  el.style.display="block";
+  el.classList.toggle("fighting",!!gym);
+  if(gym){
+    const dots=g.team.map((_,i)=>i<gym.idx?"○":"●").join(" ");
+    el.innerHTML=`<div class="gym-row">
+      <span class="gym-nm">🏅 VS ${g.leader.toUpperCase()} ${typeBadge(g.type,true)} &nbsp;${dots}
+        <span class="gym-perk">Switch Pokémon from the PARTY tab to exploit type matchups!</span></span>
+      <button class="btn" id="gymBtn" style="font-size:9px">FORFEIT</button></div>`;
+  }else{
+    const won=hasBadge(gi);
+    el.innerHTML=`<div class="gym-row">
+      <span class="gym-nm">🏅 ${g.gymName.toUpperCase()} · ${g.leader} ${typeBadge(g.type,true)} · ${g.team.length} Pokémon
+        ${won?`<span class="gym-won">✔ ${g.badge} Badge earned — ${g.perk}</span>`
+             :`<span class="gym-perk">Badge perk: ${g.perk} · Reward ₽${fmt(g.reward)}</span>`}</span>
+      <button class="btn blue" id="gymBtn" style="font-size:9px">${won?"REMATCH":"CHALLENGE"}</button></div>`;
+  }
+  $("gymBtn").onclick=()=>{gym?forfeitGym():startGym(gi);};
 }
 
 /* ===================== EXP / LEVELS / EVOLUTION ===================== */
@@ -1079,7 +1258,7 @@ function spawnWild(){
 }
 function catchChance(id,ball){
   if(ball==="master")return 1;
-  return Math.min(.95,TIER_CATCH[dexTier(id)]*BALLS[ball].mult);
+  return Math.min(.95,TIER_CATCH[dexTier(id)]*BALLS[ball].mult*(hasBadge(1)?1.2:1));
 }
 function throwBall(ball){
   if(!enc||enc.busy)return;
@@ -1166,11 +1345,18 @@ function applyTheme(){
 function tryZone(i){
   const z=ZONES[i];
   if(state.unlocked[i]){
-    if(state.zone!==i){state.zone=i;applyTheme();spawnEnemy();$("zoneTag").textContent=z.name.toUpperCase();
-      log(`You travel to <b>${z.name}</b>.`);enc=null;dirty=true;renderTab();}
+    if(state.zone!==i){
+      if(gym){gym=null;log("You fled the gym battle!");updatePlayerHpUI();}
+      state.zone=i;applyTheme();spawnEnemy();$("zoneTag").textContent=z.name.toUpperCase();
+      log(`You travel to <b>${z.name}</b>.`);enc=null;dirty=true;renderTab();renderGymPanel();}
     return;
   }
   if(dexCount()<z.dex){sfx.deny();log(`The path to ${z.name} is blocked. (Need ${z.dex} Pokédex entries)`);return;}
+  if(z.badge!=null&&!hasBadge(z.badge)){
+    const g=GYMS[z.badge];
+    sfx.deny();log(`The path to ${z.name} is blocked. (Need the <b>${g.badge} Badge</b> — defeat ${g.leader} near ${ZONES[g.zone].name}!)`);
+    return;
+  }
   if(state.money<z.cost){sfx.deny();log(`You need ₽${fmt(z.cost)} for the ferry to ${z.name}.`);return;}
   state.money-=z.cost;state.unlocked[i]=true;sfx.buy();
   log(`🎫 New area unlocked: <b>${z.name}</b>!`);
@@ -1234,9 +1420,13 @@ function catchHtml(){
     <div class="zone-list">
       ${ZONES.map((zz,i)=>{
         const unlocked=!!state.unlocked[i];
+        const c=zoneCaught(i),n=zz.pool.length;
+        const gi=gymForZone(i);
         return `<div class="zone-item ${i===state.zone?"cur":""} ${unlocked?"":"locked"}" data-zone="${i}">
-          <span class="zl">Lv${zz.lvl}</span><span>${zz.name}</span>
-          ${unlocked?"":`<span class="lock">🔒 ${zz.dex}&nbsp;dex<br>₽${fmt(zz.cost)}</span>`}
+          <span class="zl">Lv${zz.lvl}</span><span>${zz.name}${gi>=0?` <span title="${GYMS[gi].gymName} — ${GYMS[gi].leader}" style="filter:${hasBadge(gi)?"none":"grayscale(1)"}">🏅</span>`:""}</span>
+          ${unlocked
+            ?`<span class="zcount ${c>=n?"done":""}" title="unique species caught here: ${c} of ${n}"><span class="pokeball mini" style="--bt:${c>=n?"#e3350d":"#9aa3b8"}"></span>${c}/${n}</span>`
+            :`<span class="lock">🔒 ${zz.dex}&nbsp;dex<br>₽${fmt(zz.cost)}${zz.badge!=null?`<br>🏅&nbsp;${GYMS[zz.badge].badge}`:""}</span>`}
         </div>`;}).join("")}
     </div>`;
 }
@@ -1294,6 +1484,9 @@ function dexHtml(){
     <span class="hud-chip" style="box-shadow:0 0 0 2px var(--frame-dark)">${dexCount()} / 151 · bonus x${dexBonus().toFixed(2)}</span>
   </div>
   <div style="font-size:16px;color:#888;margin-bottom:8px">Every unique species caught or evolved grants <b>+5% EXP &amp; money</b> forever.</div>
+  <div style="font-size:17px;color:#666;margin-bottom:10px">Badges:
+    ${GYMS.map((g,i)=>`<span title="${g.badge} Badge — ${hasBadge(i)?g.perk:"defeat "+g.leader+" ("+g.gymName+")"}" style="${hasBadge(i)?"":"opacity:.3;filter:grayscale(1)"}">🏅${hasBadge(i)?"<small style='color:#a3540a'>"+g.badge+"</small>":""}</span>`).join(" ")}
+  </div>
   <div class="dex-grid">
     ${DEX.map((d,i)=>{
       const id=i+1,own=!!state.caught[id];
@@ -1347,10 +1540,12 @@ function bindTab(){
   document.querySelectorAll("[data-zone]").forEach(b=>b.onclick=()=>tryZone(+b.dataset.zone));
   document.querySelectorAll("[data-pi]").forEach(c=>c.onclick=e=>{
     if(e.target.dataset.box!==undefined||e.target.dataset.evo!==undefined||e.target.dataset.tutor!==undefined)return;
-    state.active=+c.dataset.pi;refreshPlayerSprite();updatePlayerPanel();renderTab();sfx.click();movesDirty=true;dirty=true;
+    if(gym&&gym.partyHp[+c.dataset.pi]<=0){sfx.deny();log(`${dexName(state.party[+c.dataset.pi].id)} has fainted — it can't battle!`);return;}
+    state.active=+c.dataset.pi;refreshPlayerSprite();updatePlayerPanel();updatePlayerHpUI();renderTab();sfx.click();movesDirty=true;dirty=true;
   });
   document.querySelectorAll("[data-box]").forEach(b=>b.onclick=e=>{
     e.stopPropagation();
+    if(gym){sfx.deny();log("No swapping with the PC during a gym battle!");return;}
     const i=+b.dataset.box;
     if(state.party.length<=1)return;
     const[mon]=state.party.splice(i,1);state.pc.push(mon);
@@ -1358,6 +1553,7 @@ function bindTab(){
     refreshPlayerSprite();updatePlayerPanel();renderTab();sfx.click();movesDirty=true;dirty=true;
   });
   document.querySelectorAll("[data-pc]").forEach(b=>b.onclick=()=>{
+    if(gym){sfx.deny();log("No swapping with the PC during a gym battle!");return;}
     if(state.party.length>=6){sfx.deny();log("Your party is full! Box someone first.");return;}
     const i=+b.dataset.pc;
     const[mon]=state.pc.splice(i,1);state.party.push(mon);
@@ -1414,6 +1610,7 @@ function buyUpg(id){
 function updateHud(){
   $("hudMoney").textContent=fmt(state.money);
   $("hudDex").textContent=dexCount();
+  $("hudBadges").textContent=badgeCount();
   $("hudKos").textContent=fmt(state.stats.kos);
   $("stKo").textContent="₽"+fmt(koMoney(zone().lvl));
   $("stPassive").textContent="₽"+fmt(passiveIncome());
@@ -1443,6 +1640,10 @@ function tick(){
       const r=moveDamage(act,bestMoveIdx(act,defT),defT);
       applyDamage(Math.max(1,r.dmg)*hits); // chip damage even vs immunity so idle never stalls
     }
+  }
+  if(gym&&enemy&&!enemyDead&&now>=gym.nextAtkAt){
+    gym.nextAtkAt=now+GYM_ATK_INTERVAL;
+    leaderAttack();
   }
   state.money+=passiveIncome()*dt;
   const cf=$("coolFill");
@@ -1504,7 +1705,7 @@ function init(){
   $("tutorClose").onclick=closeTutor;
   $("tutorModal").addEventListener("click",e=>{if(e.target.id==="tutorModal")closeTutor();});
   $("trainBtn").onclick=clickAttack;
-  $("swapFoe").onclick=()=>{if(!enemyDead){spawnEnemy();sfx.click();}};
+  $("swapFoe").onclick=()=>{if(gym){sfx.deny();return;}if(!enemyDead){spawnEnemy();sfx.click();}};
   $("scene").addEventListener("click",e=>{if(e.target.id==="enemySprite")clickAttack();});
   window.addEventListener("keydown",e=>{
     if(e.code==="Space"&&!e.repeat&&!e.target.matches("button,input")){
@@ -1520,6 +1721,7 @@ function init(){
   $("zoneTag").textContent=zone().name.toUpperCase();
   applyTheme();
   spawnEnemy();
+  renderGymPanel();
 
   if(!state.party.length){
     document.querySelectorAll("[data-sprite]").forEach(img=>setSprite(img,frontAnim(+img.dataset.sprite),+img.dataset.sprite));
