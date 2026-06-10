@@ -70,7 +70,6 @@ header.topbar{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bot
   box-shadow:0 0 0 2px #fff,0 0 0 4px var(--frame-dark),2px 4px 0 4px rgba(0,0,0,.18);
   display:flex;align-items:center;gap:8px;white-space:nowrap;
 }
-.hud-chip small{font-family:'VT323';font-size:15px;color:#888;display:block}
 .money-ico{display:inline-block;width:14px;height:14px;border-radius:50%;
   background:linear-gradient(180deg,var(--red) 0 45%, #222 45% 55%, #fff 55% 100%);
   box-shadow:0 0 0 2px #222, inset 0 0 0 2px rgba(255,255,255,.25);position:relative}
@@ -107,11 +106,10 @@ main{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
 .scene{
   position:relative;height:330px;border-radius:6px;overflow:hidden;cursor:crosshair;
   background:
-    radial-gradient(120px 36px at 76% 41%, rgba(255,255,255,.0), rgba(255,255,255,.0)),
     linear-gradient(180deg,#a8e0f8 0%, #cdeefb 45%, #9bd468 46%, #7ec452 70%, #63ad3c 100%);
   box-shadow:inset 0 0 0 3px var(--frame-dark);
 }
-.scene::before{ /* far tree line */
+.scene::before{
   content:"";position:absolute;left:0;right:0;top:32%;height:14%;
   background:repeating-linear-gradient(90deg,#3e8a4a 0 26px, #347a40 26px 52px);
   clip-path:polygon(0 100%,0 40%,4% 10%,8% 45%,12% 5%,16% 42%,20% 12%,24% 48%,28% 8%,32% 44%,36% 14%,40% 46%,44% 6%,48% 42%,52% 12%,56% 47%,60% 9%,64% 44%,68% 15%,72% 46%,76% 7%,80% 43%,84% 13%,88% 47%,92% 9%,96% 44%,100% 35%,100% 100%);
@@ -168,6 +166,9 @@ main{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
 @keyframes dmgup{0%{transform:translateY(0);opacity:1}100%{transform:translateY(-66px);opacity:0}}
 .coin-float{position:absolute;z-index:30;pointer-events:none;font-family:'Press Start 2P';font-size:10px;color:#2e9c46;
   text-shadow:1px 1px 0 #fff;animation:dmgup 1s steps(8) forwards}
+.eff-float{position:absolute;z-index:31;pointer-events:none;font-family:'Press Start 2P';font-size:10px;
+  text-shadow:1px 1px 0 #fff;animation:dmgup 1.05s steps(8) forwards}
+.eff-float.up{color:#1d7a33}.eff-float.dn{color:#a87600}.eff-float.zero{color:#c03028}
 
 .battle-controls{display:flex;gap:12px;margin-top:14px;flex-wrap:wrap;align-items:stretch}
 .btn{
@@ -185,6 +186,21 @@ main{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
 .btn.big{font-size:14px;padding:18px 26px 16px;flex:1}
 .stat-strip{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;font-size:18px;color:#5a5a6e}
 .stat-strip b{color:var(--ink)}
+
+/* ---------- fight menu ---------- */
+.move-menu{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+@media(max-width:560px){.move-menu{grid-template-columns:1fr}}
+.move-btn{cursor:pointer;border:none;border-radius:6px;padding:8px 10px;text-align:left;font-family:'VT323';
+  background:linear-gradient(180deg,#fff,#e9e9e1);box-shadow:0 0 0 2px var(--frame-dark),0 3px 0 2px rgba(0,0,0,.2);
+  display:flex;flex-direction:column;gap:5px;line-height:1}
+.move-btn:hover{background:#fff8d8}
+.move-btn:active{transform:translateY(2px)}
+.move-btn.sel{background:linear-gradient(180deg,#fff3c4,#ffd96b);box-shadow:0 0 0 3px var(--red),0 3px 0 2px rgba(0,0,0,.2)}
+.move-btn .mv-nm{font-family:'Press Start 2P';font-size:9px;text-transform:uppercase;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.move-btn .mv-meta{display:flex;align-items:center;gap:8px;font-size:16px;color:#777;width:100%}
+.stab{font-family:'Press Start 2P';font-size:6px;color:#fff;background:var(--blue);padding:3px 4px 2px;border-radius:3px;font-style:normal}
+.eff{font-family:'Press Start 2P';font-size:8px;margin-left:auto}
+.eff.up{color:#2e9c46}.eff.dn{color:#c08a00}.eff.zero{color:#c03028}
 
 /* ---------- tabs ---------- */
 .tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
@@ -215,8 +231,6 @@ main{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
   margin-bottom:30px;animation:idlebob 1.5s steps(2) infinite}
 #wildSprite.appear{animation:appear .5s steps(5)}
 @keyframes appear{from{transform:translateY(-30px) scale(.2);opacity:0}to{transform:none;opacity:1}}
-#wildSprite.caught-flash{animation:caughtflash .4s steps(4) forwards}
-@keyframes caughtflash{to{filter:brightness(8);transform:scale(.05);opacity:0}}
 .wild-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:10px 2px 8px;flex-wrap:wrap}
 .wild-name{font-family:'Press Start 2P';font-size:12px;text-transform:uppercase}
 .type-badge{display:inline-block;font-family:'Press Start 2P';font-size:7px;color:#fff;padding:5px 8px 4px;border-radius:4px;
@@ -271,10 +285,14 @@ main{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
 .party-card .pc-info{flex:1;min-width:0}
 .party-card .pc-nm{font-family:'Press Start 2P';font-size:8px;text-transform:uppercase;white-space:nowrap;overflow:hidden}
 .party-card .pc-lv{font-size:16px;color:#666}
+.party-card .pc-hint{font-size:13px;color:#8a9a78}
 .party-card .boxit{position:absolute;top:4px;right:5px;border:none;background:#cfd4e6;border-radius:4px;cursor:pointer;
   font-family:'VT323';font-size:14px;padding:1px 5px;box-shadow:0 0 0 1px var(--frame-dark)}
 .party-card .boxit:hover{background:#ffb3a0}
 .active-star{position:absolute;left:-7px;top:-9px;font-size:18px;filter:drop-shadow(1px 1px 0 #a3540a)}
+.evo-btn{cursor:pointer;border:none;border-radius:4px;font-family:'Press Start 2P';font-size:7px;padding:6px 7px 5px;margin-top:4px;
+  background:linear-gradient(180deg,#c9a3f0,#8a4f9e);color:#fff;text-shadow:1px 1px 0 #4e2360;box-shadow:0 0 0 2px var(--frame-dark)}
+.evo-btn:hover{filter:brightness(1.15)}
 .pc-section{margin-top:14px}
 .pc-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .pc-mon{width:54px;background:#fff;border-radius:6px;padding:3px;text-align:center;cursor:pointer;box-shadow:0 0 0 2px var(--frame-dark)}
@@ -359,6 +377,7 @@ main{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
           <img class="sprite" id="playerSprite" alt="your pokemon">
           <div class="statbox enemy-s">
             <div class="row1"><span class="nm" id="enemyName">—</span><span class="lv" id="enemyLv">Lv?</span></div>
+            <div id="enemyTypes" style="margin-top:6px"></div>
             <div class="bar-label">HP</div>
             <div class="bar hp" id="enemyHpBar"><div class="fill" id="enemyHpFill" style="width:100%"></div></div>
             <div class="hp-text" id="enemyHpText"></div>
@@ -372,9 +391,11 @@ main{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
         </div>
         <div class="battle-controls">
           <button class="btn primary big" id="trainBtn">⚔ TRAIN!</button>
+          <button class="btn" id="swapFoe" title="find a different sparring partner" style="font-size:9px">SWAP<br>FOE</button>
         </div>
+        <div class="move-menu" id="moveMenu"></div>
         <div class="stat-strip">
-          <span>Click DMG <b id="stClick">0</b></span>
+          <span>Move DMG <b id="stClick">0</b></span>
           <span>Auto DPS <b id="stDps">0</b></span>
           <span>₽ / KO <b id="stKo">0</b></span>
           <span>Passive <b id="stPassive">0</b>/s</span>
@@ -419,83 +440,89 @@ main{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
   </div>
 </div>
 
+<script src="data.js"></script>
 <script>
 "use strict";
 /* =====================================================================
-   DATA — [name, type, tier, evolvesTo (0 = none, array = random), evoLevel]
-   tier: 1 common · 2 uncommon · 3 rare · 4 very rare · 5 legendary
+   DEX — [name, tier]; types & learnsets come from GAME_DATA (PokeAPI,
+   Gen 1 Red/Blue level-up learnsets). tier: 1 common … 5 legendary
 ===================================================================== */
 const DEX=[
-["Bulbasaur","grass",3,2,16],["Ivysaur","grass",3,3,32],["Venusaur","grass",4,0,0],
-["Charmander","fire",3,5,16],["Charmeleon","fire",3,6,36],["Charizard","fire",4,0,0],
-["Squirtle","water",3,8,16],["Wartortle","water",3,9,36],["Blastoise","water",4,0,0],
-["Caterpie","bug",1,11,7],["Metapod","bug",1,12,10],["Butterfree","bug",2,0,0],
-["Weedle","bug",1,14,7],["Kakuna","bug",1,15,10],["Beedrill","bug",2,0,0],
-["Pidgey","normal",1,17,18],["Pidgeotto","normal",2,18,36],["Pidgeot","normal",3,0,0],
-["Rattata","normal",1,20,20],["Raticate","normal",2,0,0],
-["Spearow","normal",1,22,20],["Fearow","normal",2,0,0],
-["Ekans","poison",2,24,22],["Arbok","poison",3,0,0],
-["Pikachu","electric",3,26,30],["Raichu","electric",4,0,0],
-["Sandshrew","ground",2,28,22],["Sandslash","ground",3,0,0],
-["Nidoran♀","poison",2,30,16],["Nidorina","poison",2,31,36],["Nidoqueen","poison",3,0,0],
-["Nidoran♂","poison",2,33,16],["Nidorino","poison",2,34,36],["Nidoking","poison",3,0,0],
-["Clefairy","fairy",3,36,34],["Clefable","fairy",4,0,0],
-["Vulpix","fire",3,38,30],["Ninetales","fire",4,0,0],
-["Jigglypuff","fairy",2,40,30],["Wigglytuff","fairy",3,0,0],
-["Zubat","poison",1,42,22],["Golbat","poison",2,0,0],
-["Oddish","grass",1,44,21],["Gloom","grass",2,45,36],["Vileplume","grass",3,0,0],
-["Paras","bug",2,47,24],["Parasect","bug",3,0,0],
-["Venonat","bug",2,49,31],["Venomoth","bug",3,0,0],
-["Diglett","ground",2,51,26],["Dugtrio","ground",3,0,0],
-["Meowth","normal",2,53,28],["Persian","normal",3,0,0],
-["Psyduck","water",2,55,33],["Golduck","water",3,0,0],
-["Mankey","fighting",2,57,28],["Primeape","fighting",3,0,0],
-["Growlithe","fire",3,59,32],["Arcanine","fire",4,0,0],
-["Poliwag","water",2,61,25],["Poliwhirl","water",2,62,40],["Poliwrath","water",3,0,0],
-["Abra","psychic",3,64,16],["Kadabra","psychic",3,65,36],["Alakazam","psychic",4,0,0],
-["Machop","fighting",2,67,28],["Machoke","fighting",2,68,40],["Machamp","fighting",3,0,0],
-["Bellsprout","grass",2,70,21],["Weepinbell","grass",2,71,36],["Victreebel","grass",3,0,0],
-["Tentacool","water",2,73,30],["Tentacruel","water",3,0,0],
-["Geodude","rock",2,75,25],["Graveler","rock",2,76,40],["Golem","rock",3,0,0],
-["Ponyta","fire",2,78,40],["Rapidash","fire",3,0,0],
-["Slowpoke","water",2,80,37],["Slowbro","water",3,0,0],
-["Magnemite","electric",2,82,30],["Magneton","electric",3,0,0],
-["Farfetch'd","normal",3,0,0],
-["Doduo","normal",2,85,31],["Dodrio","normal",3,0,0],
-["Seel","water",2,87,34],["Dewgong","water",3,0,0],
-["Grimer","poison",2,89,38],["Muk","poison",3,0,0],
-["Shellder","water",2,91,32],["Cloyster","water",3,0,0],
-["Gastly","ghost",3,93,25],["Haunter","ghost",3,94,40],["Gengar","ghost",4,0,0],
-["Onix","rock",3,0,0],
-["Drowzee","psychic",2,97,26],["Hypno","psychic",3,0,0],
-["Krabby","water",2,99,28],["Kingler","water",3,0,0],
-["Voltorb","electric",2,101,30],["Electrode","electric",3,0,0],
-["Exeggcute","grass",3,103,35],["Exeggutor","grass",4,0,0],
-["Cubone","ground",2,105,28],["Marowak","ground",3,0,0],
-["Hitmonlee","fighting",3,0,0],["Hitmonchan","fighting",3,0,0],
-["Lickitung","normal",3,0,0],
-["Koffing","poison",2,110,35],["Weezing","poison",3,0,0],
-["Rhyhorn","ground",3,112,42],["Rhydon","ground",4,0,0],
-["Chansey","normal",4,0,0],["Tangela","grass",3,0,0],["Kangaskhan","normal",4,0,0],
-["Horsea","water",2,117,32],["Seadra","water",3,0,0],
-["Goldeen","water",1,119,33],["Seaking","water",2,0,0],
-["Staryu","water",2,121,35],["Starmie","water",3,0,0],
-["Mr. Mime","psychic",3,0,0],["Scyther","bug",4,0,0],["Jynx","ice",3,0,0],
-["Electabuzz","electric",4,0,0],["Magmar","fire",4,0,0],["Pinsir","bug",4,0,0],["Tauros","normal",4,0,0],
-["Magikarp","water",1,130,20],["Gyarados","water",4,0,0],
-["Lapras","water",4,0,0],["Ditto","normal",3,0,0],
-["Eevee","normal",3,[134,135,136],25],["Vaporeon","water",4,0,0],["Jolteon","electric",4,0,0],["Flareon","fire",4,0,0],
-["Porygon","normal",4,0,0],
-["Omanyte","rock",3,139,40],["Omastar","rock",4,0,0],
-["Kabuto","rock",3,141,40],["Kabutops","rock",4,0,0],
-["Aerodactyl","rock",4,0,0],["Snorlax","normal",4,0,0],
-["Articuno","ice",5,0,0],["Zapdos","electric",5,0,0],["Moltres","fire",5,0,0],
-["Dratini","dragon",4,148,30],["Dragonair","dragon",4,149,55],["Dragonite","dragon",5,0,0],
-["Mewtwo","psychic",5,0,0],["Mew","psychic",5,0,0]
+["Bulbasaur",3],["Ivysaur",3],["Venusaur",4],["Charmander",3],["Charmeleon",3],["Charizard",4],
+["Squirtle",3],["Wartortle",3],["Blastoise",4],["Caterpie",1],["Metapod",1],["Butterfree",2],
+["Weedle",1],["Kakuna",1],["Beedrill",2],["Pidgey",1],["Pidgeotto",2],["Pidgeot",3],
+["Rattata",1],["Raticate",2],["Spearow",1],["Fearow",2],["Ekans",2],["Arbok",3],
+["Pikachu",3],["Raichu",4],["Sandshrew",2],["Sandslash",3],["Nidoran♀",2],["Nidorina",2],
+["Nidoqueen",3],["Nidoran♂",2],["Nidorino",2],["Nidoking",3],["Clefairy",3],["Clefable",4],
+["Vulpix",3],["Ninetales",4],["Jigglypuff",2],["Wigglytuff",3],["Zubat",1],["Golbat",2],
+["Oddish",1],["Gloom",2],["Vileplume",3],["Paras",2],["Parasect",3],["Venonat",2],
+["Venomoth",3],["Diglett",2],["Dugtrio",3],["Meowth",2],["Persian",3],["Psyduck",2],
+["Golduck",3],["Mankey",2],["Primeape",3],["Growlithe",3],["Arcanine",4],["Poliwag",2],
+["Poliwhirl",2],["Poliwrath",3],["Abra",3],["Kadabra",3],["Alakazam",4],["Machop",2],
+["Machoke",2],["Machamp",3],["Bellsprout",2],["Weepinbell",2],["Victreebel",3],["Tentacool",2],
+["Tentacruel",3],["Geodude",2],["Graveler",2],["Golem",3],["Ponyta",2],["Rapidash",3],
+["Slowpoke",2],["Slowbro",3],["Magnemite",2],["Magneton",3],["Farfetch'd",3],["Doduo",2],
+["Dodrio",3],["Seel",2],["Dewgong",3],["Grimer",2],["Muk",3],["Shellder",2],
+["Cloyster",3],["Gastly",3],["Haunter",3],["Gengar",4],["Onix",3],["Drowzee",2],
+["Hypno",3],["Krabby",2],["Kingler",3],["Voltorb",2],["Electrode",3],["Exeggcute",3],
+["Exeggutor",4],["Cubone",2],["Marowak",3],["Hitmonlee",3],["Hitmonchan",3],["Lickitung",3],
+["Koffing",2],["Weezing",3],["Rhyhorn",3],["Rhydon",4],["Chansey",4],["Tangela",3],
+["Kangaskhan",4],["Horsea",2],["Seadra",3],["Goldeen",1],["Seaking",2],["Staryu",2],
+["Starmie",3],["Mr. Mime",3],["Scyther",4],["Jynx",3],["Electabuzz",4],["Magmar",4],
+["Pinsir",4],["Tauros",4],["Magikarp",1],["Gyarados",4],["Lapras",4],["Ditto",3],
+["Eevee",3],["Vaporeon",4],["Jolteon",4],["Flareon",4],["Porygon",4],["Omanyte",3],
+["Omastar",4],["Kabuto",3],["Kabutops",4],["Aerodactyl",4],["Snorlax",4],["Articuno",5],
+["Zapdos",5],["Moltres",5],["Dratini",4],["Dragonair",4],["Dragonite",5],["Mewtwo",5],["Mew",5]
 ];
 const TYPE_COLORS={normal:"#a8a878",fire:"#f08030",water:"#6890f0",grass:"#78c850",electric:"#d8b81a",
-ice:"#74cec0",fighting:"#c03028",poison:"#a040a0",ground:"#b8a038",psychic:"#f85888",bug:"#a8b820",
-rock:"#b8a038",ghost:"#705898",dragon:"#7038f8",fairy:"#ee99ac"};
+ice:"#74cec0",fighting:"#c03028",poison:"#a040a0",ground:"#b8a038",flying:"#a890f0",psychic:"#f85888",
+bug:"#a8b820",rock:"#b8a038",ghost:"#705898",dragon:"#7038f8",dark:"#705848",steel:"#9aa3b8",fairy:"#ee99ac"};
+/* standard 18-type effectiveness chart: TYPE_CHART[attack][defend] (1 if absent) */
+const TYPE_CHART={
+normal:{rock:.5,ghost:0,steel:.5},
+fire:{fire:.5,water:.5,grass:2,ice:2,bug:2,rock:.5,dragon:.5,steel:2},
+water:{fire:2,water:.5,grass:.5,ground:2,rock:2,dragon:.5},
+electric:{water:2,electric:.5,grass:.5,ground:0,flying:2,dragon:.5},
+grass:{fire:.5,water:2,grass:.5,poison:.5,ground:2,flying:.5,bug:.5,rock:2,dragon:.5,steel:.5},
+ice:{fire:.5,water:.5,grass:2,ice:.5,ground:2,flying:2,dragon:2,steel:.5},
+fighting:{normal:2,ice:2,poison:.5,flying:.5,psychic:.5,bug:.5,rock:2,ghost:0,dark:2,steel:2,fairy:.5},
+poison:{grass:2,poison:.5,ground:.5,rock:.5,ghost:.5,steel:0,fairy:2},
+ground:{fire:2,electric:2,grass:.5,poison:2,flying:0,bug:.5,rock:2,steel:2},
+flying:{electric:.5,grass:2,fighting:2,bug:2,rock:.5,steel:.5},
+psychic:{fighting:2,poison:2,psychic:.5,dark:0,steel:.5},
+bug:{fire:.5,grass:2,fighting:.5,poison:.5,flying:.5,psychic:2,ghost:.5,dark:2,steel:.5,fairy:.5},
+rock:{fire:2,ice:2,fighting:.5,ground:.5,flying:2,bug:2,steel:.5},
+ghost:{normal:0,psychic:2,ghost:2,dark:.5},
+dragon:{dragon:2,steel:.5,fairy:0},
+dark:{fighting:.5,psychic:2,ghost:2,dark:.5,fairy:.5},
+steel:{fire:.5,water:.5,electric:.5,ice:2,rock:2,steel:.5,fairy:2},
+fairy:{fire:.5,fighting:2,poison:.5,dragon:2,dark:2,steel:.5}
+};
+/* natural Gen 1 evolutions: {lvl,to} | {item,to} | {items:{stone:to}} | {trade:to} */
+const EVO={
+1:{lvl:16,to:2},2:{lvl:32,to:3},4:{lvl:16,to:5},5:{lvl:36,to:6},7:{lvl:16,to:8},8:{lvl:36,to:9},
+10:{lvl:7,to:11},11:{lvl:10,to:12},13:{lvl:7,to:14},14:{lvl:10,to:15},16:{lvl:18,to:17},17:{lvl:36,to:18},
+19:{lvl:20,to:20},21:{lvl:20,to:22},23:{lvl:22,to:24},25:{item:"thunder",to:26},27:{lvl:22,to:28},
+29:{lvl:16,to:30},30:{item:"moon",to:31},32:{lvl:16,to:33},33:{item:"moon",to:34},35:{item:"moon",to:36},
+37:{item:"fire",to:38},39:{item:"moon",to:40},41:{lvl:22,to:42},43:{lvl:21,to:44},44:{item:"leaf",to:45},
+46:{lvl:24,to:47},48:{lvl:31,to:49},50:{lvl:26,to:51},52:{lvl:28,to:53},54:{lvl:33,to:55},56:{lvl:28,to:57},
+58:{item:"fire",to:59},60:{lvl:25,to:61},61:{item:"water",to:62},63:{lvl:16,to:64},64:{trade:65},
+66:{lvl:28,to:67},67:{trade:68},69:{lvl:21,to:70},70:{item:"leaf",to:71},72:{lvl:30,to:73},
+74:{lvl:25,to:75},75:{trade:76},77:{lvl:40,to:78},79:{lvl:37,to:80},81:{lvl:30,to:82},84:{lvl:31,to:85},
+86:{lvl:34,to:87},88:{lvl:38,to:89},90:{item:"water",to:91},92:{lvl:25,to:93},93:{trade:94},
+96:{lvl:26,to:97},98:{lvl:28,to:99},100:{lvl:30,to:101},102:{item:"leaf",to:103},104:{lvl:28,to:105},
+109:{lvl:35,to:110},111:{lvl:42,to:112},116:{lvl:32,to:117},118:{lvl:33,to:119},120:{item:"water",to:121},
+129:{lvl:20,to:130},133:{items:{water:134,thunder:135,fire:136}},138:{lvl:40,to:139},140:{lvl:40,to:141},
+147:{lvl:30,to:148},148:{lvl:55,to:149}
+};
+const ITEMS={
+fire:{name:"Fire Stone",icon:"🔥",cost:25e3,desc:"Evolves Vulpix, Growlithe, Eevee."},
+water:{name:"Water Stone",icon:"💧",cost:25e3,desc:"Evolves Poliwhirl, Shellder, Staryu, Eevee."},
+thunder:{name:"Thunder Stone",icon:"⚡",cost:25e3,desc:"Evolves Pikachu, Eevee."},
+leaf:{name:"Leaf Stone",icon:"🍃",cost:25e3,desc:"Evolves Gloom, Weepinbell, Exeggcute."},
+moon:{name:"Moon Stone",icon:"🌙",cost:4e4,desc:"Evolves Nidorina, Nidorino, Clefairy, Jigglypuff."},
+link:{name:"Link Cable",icon:"🔗",cost:12e4,desc:"Trade-evolves Kadabra, Machoke, Graveler, Haunter."},
+};
 
 const ZONES=[
 {name:"Route 1",lvl:4,pool:[16,19,21],dex:0,cost:0},
@@ -520,8 +547,8 @@ const BALLS={
   master:{name:"Master Ball",cost:2.5e7,mult:99,color:"#8a4f9e"},
 };
 const UPGRADES=[
-{id:"macho",name:"Macho Brace",desc:"+100% click damage per rank.",base:120,mult:1.85,max:60},
-{id:"school",name:"Trainer School",desc:"Auto-attacks: +0.25 hits per second per rank.",base:300,mult:1.9,max:40},
+{id:"macho",name:"Macho Brace",desc:"+100% move damage per rank.",base:120,mult:1.85,max:60},
+{id:"school",name:"Trainer School",desc:"Auto-attacks: +0.25 hits per second per rank (uses your best move).",base:300,mult:1.9,max:40},
 {id:"protein",name:"Protein Stash",desc:"+20% EXP gained per rank.",base:450,mult:2.0,max:30},
 {id:"amulet",name:"Amulet Coin",desc:"+25% money from all sources per rank.",base:600,mult:2.1,max:30},
 {id:"share",name:"EXP Share",desc:"Benched party members gain +10% of EXP per rank.",base:1200,mult:2.4,max:10},
@@ -543,23 +570,30 @@ function setSprite(img,url,fallbackId){
 const SAVE_KEY="pokeidle-kanto-v1";
 let state=null;
 function freshState(){return{
-  money:0,balls:{poke:5,great:0,ultra:0,master:0},upg:{},zone:0,unlocked:[true],
+  money:0,balls:{poke:5,great:0,ultra:0,master:0},items:{fire:0,water:0,thunder:0,leaf:0,moon:0,link:0},
+  upg:{},zone:0,unlocked:[true],
   party:[],active:0,pc:[],caught:{},
   stats:{kos:0,catches:0,clicks:0,start:Date.now()},
   muted:false,tab:"catch",lastSeen:Date.now()
 };}
 function save(){state.lastSeen=Date.now();try{localStorage.setItem(SAVE_KEY,JSON.stringify(state));}catch(e){}}
 function load(){
-  try{const raw=localStorage.getItem(SAVE_KEY);if(raw){state=Object.assign(freshState(),JSON.parse(raw));return true;}}catch(e){}
-  state=freshState();return false;
+  try{const raw=localStorage.getItem(SAVE_KEY);state=raw?Object.assign(freshState(),JSON.parse(raw)):freshState();}
+  catch(e){state=freshState();}
+  // migrations / fixups for older saves
+  state.items=Object.assign({fire:0,water:0,thunder:0,leaf:0,moon:0,link:0},state.items||{});
+  state.balls=Object.assign({poke:5,great:0,ultra:0,master:0},state.balls||{});
+  [...state.party,...state.pc].forEach(initMoves);
 }
 
 /* ===================== HELPERS ===================== */
 const $=id=>document.getElementById(id);
 const rnd=n=>Math.floor(Math.random()*n);
 const dexName=id=>DEX[id-1][0];
-const dexType=id=>DEX[id-1][1];
-const dexTier=id=>DEX[id-1][2];
+const dexTier=id=>DEX[id-1][1];
+const M=GAME_DATA.MOVES, MD=GAME_DATA.MON;
+const dexTypes=id=>MD[id].t;
+const STRUGGLE=M.findIndex(m=>m[0]==="Struggle");
 function fmt(n){
   if(n<1000)return Math.floor(n)+"";
   const u=["K","M","B","T","Q"];let i=-1;
@@ -572,7 +606,6 @@ const dexBonus=()=>1+0.05*dexCount();
 const moneyMult=()=>(1+0.25*lv("amulet"))*dexBonus();
 const expMult=()=>(1+0.2*lv("protein"))*dexBonus();
 const activeMon=()=>state.party[state.active];
-const clickDmg=()=>Math.max(1,Math.round(activeMon().lvl*2*(1+lv("macho"))));
 const autoRate=()=>lv("school")*0.25;
 const toNext=l=>Math.floor(10*Math.pow(l,1.8));
 const zone=()=>ZONES[state.zone];
@@ -587,6 +620,43 @@ function weightedPick(pool){
   let t=ws.reduce((a,b)=>a+b,0),r=Math.random()*t;
   for(let i=0;i<pool.length;i++){r-=ws[i];if(r<=0)return pool[i];}
   return pool[pool.length-1];
+}
+const typeBadge=(t,small)=>`<span class="type-badge" style="background:${TYPE_COLORS[t]}${small?";font-size:6px;padding:4px 6px 3px":""}">${t}</span>`;
+
+/* ===================== MOVES & DAMAGE ===================== */
+function effMult(atkType,defTypes){return defTypes.reduce((e,t)=>e*((TYPE_CHART[atkType]||{})[t]??1),1);}
+function learnableAt(id,lvl){
+  const seen=new Set(),out=[];
+  for(const[l,mi]of MD[id].lm){if(l<=lvl&&!seen.has(mi)){seen.add(mi);out.push(mi);}}
+  const last=out.slice(-4);
+  return last.length?last:[STRUGGLE];
+}
+function initMoves(mon){
+  if(!mon.moves||!mon.moves.length){mon.moves=learnableAt(mon.id,mon.lvl);mon.sel=mon.moves.length-1;}
+  if(mon.sel==null||mon.sel<0||mon.sel>=mon.moves.length)mon.sel=0;
+}
+function moveDamage(mon,mi,defTypes){
+  const mv=M[mi];
+  const base=mon.lvl*2*(1+lv("macho"));
+  const stab=dexTypes(mon.id).includes(mv[1])?1.5:1;
+  const eff=effMult(mv[1],defTypes);
+  return{dmg:eff===0?0:Math.max(1,Math.round(base*(mv[2]/50)*stab*eff)),eff,mv};
+}
+function bestMoveIdx(mon,defTypes){
+  let bi=mon.moves[0],bd=-1;
+  for(const mi of mon.moves){const d=moveDamage(mon,mi,defTypes).dmg;if(d>bd){bd=d;bi=mi;}}
+  return bi;
+}
+function learnAtLevel(mon){
+  for(const[l,mi]of MD[mon.id].lm){
+    if(l!==mon.lvl||mon.moves.includes(mi))continue;
+    mon.moves.push(mi);
+    if(mon.moves.length>1)mon.moves=mon.moves.filter(x=>x!==STRUGGLE);
+    if(mon.moves.length>4)mon.moves.shift();
+    if(mon.sel>=mon.moves.length)mon.sel=mon.moves.length-1;
+    if(state.party.includes(mon))log(`${dexName(mon.id)} learned <b>${M[mi][0].toUpperCase()}</b>!`);
+    movesDirty=true;
+  }
 }
 
 /* ===================== AUDIO ===================== */
@@ -605,6 +675,7 @@ function tone(f,dur,type="square",vol=.05,when=0){
 }
 const sfx={
   click:()=>tone(740,.06),
+  superHit:()=>{tone(1180,.07,"square",.05);tone(1560,.1,"square",.05,.05);},
   ko:()=>{tone(180,.16,"sawtooth",.06);tone(120,.2,"sawtooth",.05,.07);},
   coin:()=>{tone(990,.05,"square",.035);tone(1320,.08,"square",.035,.05);},
   throw_:()=>tone(520,.12,"triangle",.06),
@@ -622,24 +693,24 @@ const sfx={
 const logMsgs=[];
 function log(msg){
   logMsgs.push(msg);if(logMsgs.length>30)logMsgs.shift();
-  const area=$("logArea");
-  area.innerHTML=logMsgs.slice(-5).map((m,i,a)=>
+  $("logArea").innerHTML=logMsgs.slice(-5).map((m,i,a)=>
     `<div class="msg${i===a.length-1?" latest":""}">${m}</div>`).join("");
 }
 
 /* ===================== ENEMY (sparring) ===================== */
-let enemy=null;
+let enemy=null,enemyDead=false,movesDirty=true;
 function spawnEnemy(){
   const z=zone();
   const id=weightedPick(z.pool);
-  enemy={id,hp:enemyMaxHp(z.lvl),max:enemyMaxHp(z.lvl),lvl:z.lvl+rnd(5)-2};
-  if(enemy.lvl<1)enemy.lvl=1;
+  enemy={id,hp:enemyMaxHp(z.lvl),max:enemyMaxHp(z.lvl),lvl:Math.max(1,z.lvl+rnd(5)-2)};
   const img=$("enemySprite");
   img.classList.remove("faint");
   setSprite(img,frontAnim(id),id);
   $("enemyName").textContent=dexName(id);
   $("enemyLv").textContent="Lv"+enemy.lvl;
+  $("enemyTypes").innerHTML=dexTypes(id).map(t=>typeBadge(t,true)).join(" ");
   updateEnemyBar();
+  movesDirty=true;
 }
 function updateEnemyBar(){
   if(!enemy)return;
@@ -655,23 +726,32 @@ function floatText(txt,cls,x,y){
   el.className=cls;el.textContent=txt;
   el.style.left=x+"px";el.style.top=y+"px";
   $("scene").appendChild(el);
-  setTimeout(()=>el.remove(),1100);
+  setTimeout(()=>el.remove(),1200);
 }
-let enemyDead=false;
-function hitEnemy(dmg,isClick){
+function applyDamage(d){
   if(!enemy||enemyDead)return;
-  enemy.hp-=dmg;
-  if(isClick){
-    const sp=$("enemySprite");
-    sp.classList.remove("hit");void sp.offsetWidth;sp.classList.add("hit");
-    const ps=$("playerSprite");
-    ps.classList.remove("lunge");void ps.offsetWidth;ps.classList.add("lunge");
-    floatText("-"+fmt(dmg),"dmg-float"+(Math.random()<.12?" crit":""),
-      $("scene").clientWidth-200+rnd(80), 60+rnd(60));
-    sfx.click();
-  }
-  updateEnemyBar();
+  enemy.hp-=d;updateEnemyBar();
   if(enemy.hp<=0)defeatEnemy();
+}
+function clickAttack(){
+  const act=activeMon();
+  if(!act||!enemy||enemyDead)return;
+  initMoves(act);
+  state.stats.clicks++;
+  const ps=$("playerSprite");ps.classList.remove("lunge");void ps.offsetWidth;ps.classList.add("lunge");
+  const dt=dexTypes(enemy.id);
+  const r=moveDamage(act,act.moves[act.sel],dt);
+  const W=$("scene").clientWidth;
+  if(r.eff===0){
+    floatText("IT HAD NO EFFECT…","eff-float zero",W-300+rnd(40),120);
+    sfx.deny();return;
+  }
+  const sp=$("enemySprite");sp.classList.remove("hit");void sp.offsetWidth;sp.classList.add("hit");
+  floatText("-"+fmt(r.dmg),"dmg-float"+(r.eff>1?" crit":""),W-200+rnd(80),60+rnd(50));
+  if(r.eff>1){floatText("SUPER EFFECTIVE!","eff-float up",W-310+rnd(40),145);sfx.superHit();}
+  else if(r.eff<1){floatText("not very effective…","eff-float dn",W-300+rnd(40),145);sfx.click();}
+  else sfx.click();
+  applyDamage(r.dmg);
 }
 function defeatEnemy(){
   enemyDead=true;
@@ -688,6 +768,7 @@ function defeatEnemy(){
 /* ===================== EXP / LEVELS / EVOLUTION ===================== */
 function grantExp(xp){
   const act=activeMon();
+  if(!act)return;
   gainExpMon(act,xp);
   const sharePct=0.1*lv("share");
   if(sharePct>0)state.party.forEach((m,i)=>{if(i!==state.active)gainExpMon(m,xp*sharePct);});
@@ -695,24 +776,24 @@ function grantExp(xp){
 }
 function gainExpMon(mon,xp){
   if(mon.lvl>=100)return;
+  initMoves(mon);
   mon.exp+=xp;
   let leveled=false;
   while(mon.lvl<100&&mon.exp>=toNext(mon.lvl)){
     mon.exp-=toNext(mon.lvl);mon.lvl++;leveled=true;
-    checkEvolve(mon);
+    learnAtLevel(mon);
+    if(checkEvolve(mon))learnAtLevel(mon);
   }
-  if(leveled&&mon===activeMon()){sfx.lvl();}
+  if(leveled&&mon===activeMon())sfx.lvl();
 }
 function checkEvolve(mon){
-  const d=DEX[mon.id-1];
-  if(!d[3]||mon.lvl<d[4])return;
+  const e=EVO[mon.id];
+  if(!e||!e.lvl||mon.lvl<e.lvl)return false;
+  evolveMonTo(mon,e.to);
+  return true;
+}
+function evolveMonTo(mon,target){
   const oldName=dexName(mon.id);
-  let target;
-  if(Array.isArray(d[3])){
-    const unowned=d[3].filter(t=>!state.caught[t]);
-    const opts=unowned.length?unowned:d[3];
-    target=opts[rnd(opts.length)];
-  }else target=d[3];
   mon.id=target;
   registerDex(target);
   sfx.evo();
@@ -722,13 +803,13 @@ function checkEvolve(mon){
     ps.classList.add("evo-flash");
     setTimeout(()=>{ps.classList.remove("evo-flash");refreshPlayerSprite();},1200);
   }
-  dirty=true;
+  movesDirty=true;dirty=true;
 }
 function registerDex(id){
   if(!state.caught[id]){state.caught[id]=true;dirty=true;}
 }
 function refreshPlayerSprite(){
-  const act=activeMon();
+  const act=activeMon();if(!act)return;
   setSprite($("playerSprite"),backAnim(act.id),act.id);
   $("playerName").textContent=dexName(act.id);
 }
@@ -740,9 +821,38 @@ function updatePlayerPanel(){
   $("playerExpText").textContent=act.lvl>=100?"MAX":fmt(act.exp)+" / "+fmt(need);
 }
 
+/* ===================== FIGHT MENU ===================== */
+function renderMoves(){
+  const menu=$("moveMenu");
+  const act=activeMon();
+  if(!act){menu.innerHTML="";return;}
+  initMoves(act);
+  const defT=enemy?dexTypes(enemy.id):null;
+  menu.innerHTML=act.moves.map((mi,i)=>{
+    const mv=M[mi];
+    const stab=dexTypes(act.id).includes(mv[1]);
+    let effTag="";
+    if(defT){
+      const eff=effMult(mv[1],defT);
+      if(eff===0)effTag='<span class="eff zero">×0</span>';
+      else if(eff>1)effTag=`<span class="eff up">×${eff}</span>`;
+      else if(eff<1)effTag=`<span class="eff dn">×${eff}</span>`;
+    }
+    return `<button class="move-btn ${i===act.sel?"sel":""}" data-move="${i}" title="attack with ${mv[0]}">
+      <span class="mv-nm">${mv[0]}${stab?'<em class="stab">STAB</em>':""}</span>
+      <span class="mv-meta">${typeBadge(mv[1],true)}<span>POW ${mv[2]}</span>${effTag}</span>
+    </button>`;
+  }).join("");
+  menu.querySelectorAll("[data-move]").forEach(b=>b.onclick=()=>{
+    const a=activeMon();if(!a)return;
+    a.sel=+b.dataset.move;
+    clickAttack();
+    renderMoves();
+  });
+}
+
 /* ===================== CATCHING ===================== */
-let enc=null;       // {id,lvl,busy,fleeAt}
-let searchReadyAt=0;
+let enc=null,searchReadyAt=0;
 function startSearch(){
   if(enc)return;
   const now=Date.now();
@@ -756,7 +866,7 @@ function startSearch(){
 function spawnWild(){
   const z=zone();
   const id=weightedPick(z.pool);
-  let lvl=z.lvl+rnd(5)-2;if(lvl<1)lvl=1;
+  const lvl=Math.max(1,z.lvl+rnd(5)-2);
   enc={id,lvl,busy:false,fleeAt:Date.now()+16000};
   log(`A wild <b>${dexName(id)}</b> appeared! (Lv${lvl})`);
   sfx.wob();
@@ -792,8 +902,8 @@ function resolveThrow(ball){
       s.style.left="calc(50% - 40px)";s.style.bottom="60px";
       tb.parentElement.appendChild(s);setTimeout(()=>s.remove(),900);
     }
-    const {id,lvl}=enc;
-    setTimeout(()=>{finishCatch(id,lvl);},700);
+    const{id,lvl}=enc;
+    setTimeout(()=>finishCatch(id,lvl),700);
   }else{
     sfx.fail();
     const ws=$("wildSprite");if(ws)ws.style.visibility="visible";
@@ -821,12 +931,16 @@ function finishCatch(id,lvl){
     const candy=Math.floor(lvl*25);
     grantExp(candy);
     log(`Gotcha! ${dexName(id)} (Lv${lvl}) was sent to Prof. Oak — he traded you ₽${fmt(bounty)} and ${fmt(candy)} EXP candy!`);
-  }else if(state.party.length<6){
-    state.party.push({id,lvl,exp:0});
-    log(`Gotcha! <b>${dexName(id)}</b> (Lv${lvl}) joined your party!${isNew?" Registered to the Pokédex!":""}`);
   }else{
-    state.pc.push({id,lvl,exp:0});
-    log(`Gotcha! <b>${dexName(id)}</b> (Lv${lvl}) was sent to the PC.${isNew?" Registered to the Pokédex!":""}`);
+    const mon={id,lvl,exp:0};
+    initMoves(mon);
+    if(state.party.length<6){
+      state.party.push(mon);
+      log(`Gotcha! <b>${dexName(id)}</b> (Lv${lvl}) joined your party!${isNew?" Registered to the Pokédex!":""}`);
+    }else{
+      state.pc.push(mon);
+      log(`Gotcha! <b>${dexName(id)}</b> (Lv${lvl}) was sent to the PC.${isNew?" Registered to the Pokédex!":""}`);
+    }
   }
   dirty=true;renderTab();updateHud();
 }
@@ -835,13 +949,9 @@ function wildTick(){
     log(`The wild ${dexName(enc.id)} got away…`);
     sfx.flee();enc=null;renderTab();
   }
-  // grass rustle off when no pending spawn
   const strip=document.querySelector(".grass-strip");
   if(strip&&!enc)strip.classList.remove("rustle");
-  // auto search via Poké Flute
-  if(lv("flute")&&!enc&&Date.now()>=searchReadyAt&&document.hasFocus()){
-    startSearch();
-  }
+  if(lv("flute")&&!enc&&Date.now()>=searchReadyAt&&document.hasFocus())startSearch();
 }
 
 /* ===================== ZONES ===================== */
@@ -879,18 +989,16 @@ function renderTab(){
 function ballIco(color){return `<span class="pokeball" style="--bt:${color}"></span>`;}
 
 function catchHtml(){
-  const z=zone();
   let inner;
   if(enc){
-    const d=DEX[enc.id-1];
     inner=`
     <div class="grass-strip" id="grassStrip">
       <img id="wildSprite" class="appear" alt="wild pokemon">
       <div id="thrownBall" class="pokeball"></div>
     </div>
     <div class="wild-head">
-      <span class="wild-name">${d[0]} <span class="lv" style="font-size:9px;color:#777">Lv${enc.lvl}</span></span>
-      <span class="type-badge" style="background:${TYPE_COLORS[d[1]]}">${d[1]}</span>
+      <span class="wild-name">${dexName(enc.id)} <span style="font-family:'Press Start 2P';font-size:9px;color:#777">Lv${enc.lvl}</span></span>
+      <span>${dexTypes(enc.id).map(t=>typeBadge(t)).join(" ")}</span>
     </div>
     <div class="cool-bar flee-bar" title="time before it flees"><div class="fill" id="fleeFill" style="width:100%"></div></div>
     <div class="ball-row">
@@ -918,28 +1026,46 @@ function catchHtml(){
     <div class="zone-list">
       ${ZONES.map((zz,i)=>{
         const unlocked=!!state.unlocked[i];
-        const can=dexCount()>=zz.dex;
         return `<div class="zone-item ${i===state.zone?"cur":""} ${unlocked?"":"locked"}" data-zone="${i}">
           <span class="zl">Lv${zz.lvl}</span><span>${zz.name}</span>
           ${unlocked?"":`<span class="lock">🔒 ${zz.dex}&nbsp;dex<br>₽${fmt(zz.cost)}</span>`}
         </div>`;}).join("")}
     </div>`;
 }
+function evoOptions(mon){
+  const e=EVO[mon.id];if(!e)return[];
+  const out=[];
+  if(e.items){for(const[it,to]of Object.entries(e.items))if(state.items[it]>0)out.push({it,to,label:ITEMS[it].name});}
+  else if(e.item&&state.items[e.item]>0)out.push({it:e.item,to:e.to,label:ITEMS[e.item].name});
+  else if(e.trade&&state.items.link>0)out.push({it:"link",to:e.trade,label:"Link Cable"});
+  return out;
+}
+function evoHint(id){
+  const e=EVO[id];if(!e)return"";
+  if(e.lvl)return`evolves at Lv${e.lvl}`;
+  if(e.trade)return`needs Link Cable`;
+  if(e.items)return`needs an evolution stone`;
+  return`needs ${ITEMS[e.item].name}`;
+}
 function partyHtml(){
   return `
   <div style="font-size:18px;color:#777;margin-bottom:8px">Click a Pokémon to make it your <b style="color:var(--red)">active trainer</b>. Active gains full EXP${lv("share")?", bench gains "+(lv("share")*10)+"%":""}.</div>
   <div class="party-grid">
-    ${state.party.map((m,i)=>`
+    ${state.party.map((m,i)=>{
+      const hint=evoHint(m.id);
+      return `
       <div class="party-card ${i===state.active?"active":""}" data-pi="${i}">
         ${i===state.active?'<span class="active-star">★</span>':""}
         <img src="${staticSpr(m.id)}" alt="">
         <div class="pc-info">
           <div class="pc-nm">${dexName(m.id)}</div>
-          <div class="pc-lv">Lv${m.lvl} · <span style="color:${TYPE_COLORS[dexType(m.id)]}">${dexType(m.id)}</span></div>
+          <div class="pc-lv">Lv${m.lvl} · ${dexTypes(m.id).map(t=>`<span style="color:${TYPE_COLORS[t]}">${t}</span>`).join("/")}</div>
           <div class="bar exp" style="height:7px"><div class="fill" style="width:${m.lvl>=100?100:Math.min(100,m.exp/toNext(m.lvl)*100)}%"></div></div>
+          ${hint?`<div class="pc-hint">${hint}</div>`:""}
+          ${evoOptions(m).map(o=>`<button class="evo-btn" data-evo="${i}:${o.it}:${o.to}">✨ USE ${o.label.toUpperCase()}</button>`).join(" ")}
         </div>
         ${state.party.length>1?`<button class="boxit" data-box="${i}" title="send to PC">PC▾</button>`:""}
-      </div>`).join("")}
+      </div>`;}).join("")}
   </div>
   <div class="pc-section">
     <div style="font-family:'Press Start 2P';font-size:9px;color:#5a6080">SOMEONE'S PC (${state.pc.length})</div>
@@ -962,7 +1088,7 @@ function dexHtml(){
   <div class="dex-grid">
     ${DEX.map((d,i)=>{
       const id=i+1,own=!!state.caught[id];
-      return `<div class="dex-cell ${own?"owned":"unseen"}" title="${own?d[0]:"???"}">
+      return `<div class="dex-cell ${own?"owned":"unseen"}" title="${own?d[0]+" — "+dexTypes(id).join("/"):"???"}">
         <img loading="lazy" src="${staticSpr(id)}" alt="">
         <span>#${String(id).padStart(3,"0")}</span>
         <span class="cn">${own?d[0]:"?????"}</span>
@@ -983,6 +1109,16 @@ function martHtml(){
         <button class="buy" data-buyball="${k}" ${state.money<b.cost?"disabled":""}>₽${fmt(b.cost)}</button>
         <button class="buy" data-buyball10="${k}" ${state.money<b.cost*10?"disabled":""}>x10</button>
       </div>`).join("")}
+    <div class="mart-sep">▸ EVOLUTION ITEMS</div>
+    ${Object.entries(ITEMS).map(([k,it])=>`
+      <div class="mart-item">
+        <span style="font-size:24px">${it.icon}</span>
+        <div class="mi-info">
+          <div class="mi-nm">${it.name} <em>(x${state.items[k]})</em></div>
+          <div class="mi-desc">${it.desc} Use it from the PARTY tab.</div>
+        </div>
+        <button class="buy" data-buyitem="${k}" ${state.money<it.cost?"disabled":""}>₽${fmt(it.cost)}</button>
+      </div>`).join("")}
     <div class="mart-sep">▸ TRAINER GEAR</div>
     ${UPGRADES.map(u=>{
       const l=lv(u.id),maxed=l>=u.max,cost=upgCost(u);
@@ -1001,8 +1137,8 @@ function bindTab(){
   document.querySelectorAll("[data-ball]").forEach(b=>b.onclick=()=>throwBall(b.dataset.ball));
   document.querySelectorAll("[data-zone]").forEach(b=>b.onclick=()=>tryZone(+b.dataset.zone));
   document.querySelectorAll("[data-pi]").forEach(c=>c.onclick=e=>{
-    if(e.target.dataset.box!==undefined)return;
-    state.active=+c.dataset.pi;refreshPlayerSprite();updatePlayerPanel();renderTab();sfx.click();dirty=true;
+    if(e.target.dataset.box!==undefined||e.target.dataset.evo!==undefined)return;
+    state.active=+c.dataset.pi;refreshPlayerSprite();updatePlayerPanel();renderTab();sfx.click();movesDirty=true;dirty=true;
   });
   document.querySelectorAll("[data-box]").forEach(b=>b.onclick=e=>{
     e.stopPropagation();
@@ -1010,7 +1146,7 @@ function bindTab(){
     if(state.party.length<=1)return;
     const[mon]=state.party.splice(i,1);state.pc.push(mon);
     if(state.active>=state.party.length)state.active=state.party.length-1;
-    refreshPlayerSprite();updatePlayerPanel();renderTab();sfx.click();dirty=true;
+    refreshPlayerSprite();updatePlayerPanel();renderTab();sfx.click();movesDirty=true;dirty=true;
   });
   document.querySelectorAll("[data-pc]").forEach(b=>b.onclick=()=>{
     if(state.party.length>=6){sfx.deny();log("Your party is full! Box someone first.");return;}
@@ -1018,8 +1154,18 @@ function bindTab(){
     const[mon]=state.pc.splice(i,1);state.party.push(mon);
     renderTab();sfx.click();dirty=true;
   });
+  document.querySelectorAll("[data-evo]").forEach(b=>b.onclick=e=>{
+    e.stopPropagation();
+    const[pi,it,to]=b.dataset.evo.split(":");
+    const mon=state.party[+pi];
+    if(!mon||state.items[it]<=0)return;
+    state.items[it]--;
+    evolveMonTo(mon,+to);
+    renderTab();updateHud();
+  });
   document.querySelectorAll("[data-buyball]").forEach(b=>b.onclick=()=>buyBall(b.dataset.buyball,1));
   document.querySelectorAll("[data-buyball10]").forEach(b=>b.onclick=()=>buyBall(b.dataset.buyball10,10));
+  document.querySelectorAll("[data-buyitem]").forEach(b=>b.onclick=()=>buyItem(b.dataset.buyitem));
   document.querySelectorAll("[data-buyupg]").forEach(b=>b.onclick=()=>buyUpg(b.dataset.buyupg));
   if(enc){
     const ws=$("wildSprite");
@@ -1034,6 +1180,13 @@ function buyBall(k,n){
   log(`Bought ${n}x ${BALLS[k].name}!`);
   renderTab();updateHud();
 }
+function buyItem(k){
+  const cost=ITEMS[k].cost;
+  if(state.money<cost){sfx.deny();return;}
+  state.money-=cost;state.items[k]++;sfx.buy();dirty=true;
+  log(`Bought a ${ITEMS[k].name}! Use it from the PARTY tab.`);
+  renderTab();updateHud();
+}
 function buyUpg(id){
   const u=UPGRADES.find(x=>x.id===id);
   if(lv(id)>=u.max)return;
@@ -1041,7 +1194,7 @@ function buyUpg(id){
   if(state.money<cost){sfx.deny();return;}
   state.money-=cost;state.upg[id]=lv(id)+1;sfx.buy();dirty=true;
   log(`Equipped <b>${u.name}</b> Rk.${state.upg[id]}!`);
-  renderTab();updateHud();
+  renderTab();updateHud();movesDirty=true;
 }
 
 /* ===================== HUD ===================== */
@@ -1049,34 +1202,44 @@ function updateHud(){
   $("hudMoney").textContent=fmt(state.money);
   $("hudDex").textContent=dexCount();
   $("hudKos").textContent=fmt(state.stats.kos);
-  $("stClick").textContent=fmt(clickDmg());
-  $("stDps").textContent=fmt(Math.round(clickDmg()*autoRate()));
   $("stKo").textContent="₽"+fmt(koMoney(zone().lvl));
   $("stPassive").textContent="₽"+fmt(passiveIncome());
   $("stDex").textContent="x"+dexBonus().toFixed(2);
+  const act=activeMon();
+  if(act&&act.moves&&act.moves.length){
+    const defT=enemy?dexTypes(enemy.id):[];
+    $("stClick").textContent=fmt(moveDamage(act,act.moves[act.sel],defT).dmg);
+    $("stDps").textContent=fmt(Math.round(moveDamage(act,bestMoveIdx(act,defT),defT).dmg*autoRate()));
+  }else{
+    $("stClick").textContent="0";$("stDps").textContent="0";
+  }
 }
 
 /* ===================== MAIN LOOP ===================== */
 let lastTick=Date.now(),saveAt=Date.now()+10000,autoCarry=0;
 function tick(){
   const now=Date.now(),dt=(now-lastTick)/1000;lastTick=now;
-  // auto training
   const rate=autoRate();
-  if(rate>0&&enemy&&!enemyDead){
+  if(rate>0&&enemy&&!enemyDead&&activeMon()){
     autoCarry+=rate*dt;
     const hits=Math.floor(autoCarry);
-    if(hits>0){autoCarry-=hits;hitEnemy(clickDmg()*hits,false);}
+    if(hits>0){
+      autoCarry-=hits;
+      const act=activeMon();initMoves(act);
+      const defT=dexTypes(enemy.id);
+      const r=moveDamage(act,bestMoveIdx(act,defT),defT);
+      applyDamage(Math.max(1,r.dmg)*hits); // chip damage even vs immunity so idle never stalls
+    }
   }
-  // passive income
   state.money+=passiveIncome()*dt;
-  // bars
   const cf=$("coolFill");
   if(cf){const cd=searchCooldown()*1000,rem=Math.max(0,searchReadyAt-now);
     cf.style.width=(100-(rem/cd*100))+"%";
     const sb=$("searchBtn");if(sb)sb.disabled=rem>0;}
   const ff=$("fleeFill");
-  if(ff&&enc){ff.style.width=Math.max(0,(enc.fleeAt-now)/16000*100)+"%";}
+  if(ff&&enc)ff.style.width=Math.max(0,(enc.fleeAt-now)/16000*100)+"%";
   wildTick();
+  if(movesDirty){renderMoves();movesDirty=false;}
   updateHud();updatePlayerPanel();
   if(dirty&&state.tab==="dex"){renderTab();dirty=false;}
   if(now>saveAt){save();saveAt=now+10000;}
@@ -1089,8 +1252,10 @@ function applyOffline(){
   const z=zone();
   let gained=Math.floor(passiveIncome()*elapsed);
   let kos=0;
-  if(autoRate()>0){
-    const dps=clickDmg()*autoRate();
+  const act=activeMon();
+  if(act&&autoRate()>0){
+    initMoves(act);
+    const dps=moveDamage(act,bestMoveIdx(act,[]),[]).dmg*autoRate(); // neutral matchup
     kos=Math.floor(elapsed*dps/enemyMaxHp(z.lvl));
     gained+=kos*koMoney(z.lvl);
     state.stats.kos+=kos;
@@ -1104,31 +1269,35 @@ function applyOffline(){
 
 /* ===================== INIT ===================== */
 function pickStarter(id){
-  state.party=[{id,lvl:5,exp:0}];
+  const mon={id,lvl:5,exp:0};
+  initMoves(mon);
+  state.party=[mon];
   state.active=0;
   registerDex(id);
   state.stats.start=Date.now();
   $("starterModal").style.display="none";
-  log(`You chose <b>${dexName(id)}</b>! Your journey begins on Route 1. Click the wild Pokémon to train!`);
-  refreshPlayerSprite();updatePlayerPanel();save();
+  log(`You chose <b>${dexName(id)}</b>! Your journey begins on Route 1. Pick a move and battle!`);
+  refreshPlayerSprite();updatePlayerPanel();movesDirty=true;save();
 }
 function init(){
-  const had=load();
-  // header buttons
+  load();
   $("muteBtn").textContent=state.muted?"♪ OFF":"♪ ON";
   $("muteBtn").onclick=()=>{state.muted=!state.muted;$("muteBtn").textContent=state.muted?"♪ OFF":"♪ ON";save();};
   $("resetBtn").onclick=()=>{
     if(confirm("Erase your save and start a brand-new adventure?")){
       localStorage.removeItem(SAVE_KEY);location.reload();
     }};
-  // battle input
-  $("trainBtn").onclick=()=>{state.stats.clicks++;hitEnemy(clickDmg(),true);};
-  $("scene").addEventListener("click",e=>{
-    if(e.target.id==="enemySprite"){state.stats.clicks++;hitEnemy(clickDmg(),true);}
-  });
+  $("trainBtn").onclick=clickAttack;
+  $("swapFoe").onclick=()=>{if(!enemyDead){spawnEnemy();sfx.click();}};
+  $("scene").addEventListener("click",e=>{if(e.target.id==="enemySprite")clickAttack();});
   window.addEventListener("keydown",e=>{
     if(e.code==="Space"&&!e.repeat&&!e.target.matches("button,input")){
-      e.preventDefault();state.stats.clicks++;hitEnemy(clickDmg(),true);
+      e.preventDefault();clickAttack();
+    }
+    if(/^Digit[1-4]$/.test(e.code)&&!e.target.matches("input")){
+      const act=activeMon();
+      const idx=+e.code.slice(5)-1;
+      if(act&&act.moves&&act.moves[idx]!==undefined){act.sel=idx;clickAttack();renderMoves();}
     }});
   window.addEventListener("beforeunload",save);
 
@@ -1136,17 +1305,16 @@ function init(){
   spawnEnemy();
 
   if(!state.party.length){
-    // starter selection
     document.querySelectorAll("[data-sprite]").forEach(img=>setSprite(img,frontAnim(+img.dataset.sprite),+img.dataset.sprite));
     $("starterModal").style.display="flex";
     document.querySelectorAll(".starter-pick").forEach(b=>b.onclick=()=>pickStarter(+b.dataset.id));
     log("Professor Oak hands you a Pokédex. Time to pick a partner!");
   }else{
     refreshPlayerSprite();updatePlayerPanel();
-    log(had?"Welcome back, trainer!":"Your adventure begins!");
+    log("Welcome back, trainer!");
     applyOffline();
   }
-  renderTab();updateHud();
+  renderTab();updateHud();renderMoves();
   setInterval(tick,100);
 }
 init();
