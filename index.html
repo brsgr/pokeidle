@@ -119,7 +119,7 @@ main{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
 .platform.enemy-p{width:240px;height:64px;right:42px;top:158px}
 .platform.player-p{width:280px;height:74px;left:26px;bottom:8px}
 .zone-tag{
-  position:absolute;top:10px;left:10px;z-index:6;font-family:'Press Start 2P';font-size:9px;
+  position:absolute;top:10px;right:10px;z-index:6;font-family:'Press Start 2P';font-size:9px;
   background:rgba(20,28,64,.85);color:#ffe97d;padding:7px 10px 5px;border-radius:4px;letter-spacing:1px;
   box-shadow:0 0 0 2px #ffe97d;
 }
@@ -131,8 +131,10 @@ main{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
 @keyframes idlebob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 #playerSprite.lunge{animation:lunge .28s steps(3)}
 @keyframes lunge{0%{transform:translate(0,0)}40%{transform:translate(46px,-26px)}100%{transform:translate(0,0)}}
-#enemySprite.hit{animation:hitshake .25s steps(4);filter:brightness(2.4) saturate(.2)}
-@keyframes hitshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-9px)}75%{transform:translateX(9px)}}
+#enemySprite.hit{animation:hitshake .25s steps(4)}
+@keyframes hitshake{0%,100%{transform:translateX(0);filter:none}
+  25%{transform:translateX(-9px);filter:brightness(2.4) saturate(.2)}
+  75%{transform:translateX(9px);filter:brightness(2.4) saturate(.2)}}
 #enemySprite.faint{animation:faint .55s steps(5) forwards}
 @keyframes faint{to{transform:translateY(70px);opacity:0}}
 
@@ -140,7 +142,7 @@ main{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
   position:absolute;z-index:6;background:var(--paper);border-radius:6px;padding:7px 10px 8px;min-width:215px;
   box-shadow:0 0 0 2px #d8c048, 0 0 0 4px var(--frame-dark), 3px 4px 0 4px rgba(0,0,0,.16);
 }
-.statbox.enemy-s{top:14px;right:12px}
+.statbox.enemy-s{top:14px;left:12px}
 .statbox.player-s{bottom:14px;right:12px}
 @media(max-width:560px){.statbox{min-width:165px}}
 .statbox .row1{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
