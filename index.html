@@ -22,6 +22,12 @@
   --hp-yellow:#f8d030;
   --hp-red:#f05868;
   --exp-blue:#48a0f8;
+  /* backdrop silhouette shapes for area themes */
+  --shape-trees:polygon(0 100%,0 40%,4% 10%,8% 45%,12% 5%,16% 42%,20% 12%,24% 48%,28% 8%,32% 44%,36% 14%,40% 46%,44% 6%,48% 42%,52% 12%,56% 47%,60% 9%,64% 44%,68% 15%,72% 46%,76% 7%,80% 43%,84% 13%,88% 47%,92% 9%,96% 44%,100% 35%,100% 100%);
+  --shape-spikes:polygon(0 0,100% 0,100% 30%,96% 85%,93% 32%,89% 70%,85% 28%,81% 90%,77% 35%,73% 65%,69% 25%,65% 80%,61% 33%,57% 72%,53% 28%,49% 88%,45% 34%,41% 68%,37% 27%,33% 82%,29% 36%,25% 64%,21% 28%,17% 76%,13% 33%,9% 60%,5% 27%,2% 70%,0 32%);
+  --shape-skyline:polygon(0 100%,0 50%,7% 50%,7% 22%,14% 22%,14% 58%,22% 58%,22% 34%,30% 34%,30% 12%,36% 12%,36% 56%,45% 56%,45% 28%,53% 28%,53% 62%,60% 62%,60% 18%,68% 18%,68% 52%,76% 52%,76% 36%,84% 36%,84% 60%,92% 60%,92% 30%,100% 30%,100% 100%);
+  --shape-peaks:polygon(0 100%,0 65%,10% 22%,22% 68%,34% 30%,47% 75%,58% 20%,70% 62%,82% 32%,92% 60%,100% 45%,100% 100%);
+  --shape-band:polygon(0 100%,0 35%,6% 50%,12% 35%,18% 50%,24% 35%,30% 50%,36% 35%,42% 50%,48% 35%,54% 50%,60% 35%,66% 50%,72% 35%,78% 50%,84% 35%,90% 50%,96% 35%,100% 45%,100% 100%);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{background:#0b1330}
@@ -104,18 +110,57 @@ main{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
 
 /* ---------- battle scene ---------- */
 .scene{
+  /* default theme: grassland route */
+  --sky1:#a8e0f8;--sky2:#cdeefb;--gnd1:#9bd468;--gnd2:#7ec452;--gnd3:#63ad3c;
+  --bk1:#3e8a4a;--bk2:#347a40;--plat1:#8ad05e;--plat2:#6cb648;--plat3:#5aa83c;
+  --ridge-top:32%;--ridge-h:14%;--ridge-op:.85;--ridge-shape:var(--shape-trees);
   position:relative;height:330px;border-radius:6px;overflow:hidden;cursor:crosshair;
   background:
-    linear-gradient(180deg,#a8e0f8 0%, #cdeefb 45%, #9bd468 46%, #7ec452 70%, #63ad3c 100%);
+    linear-gradient(180deg,var(--sky1) 0%, var(--sky2) 45%, var(--gnd1) 46%, var(--gnd2) 70%, var(--gnd3) 100%);
   box-shadow:inset 0 0 0 3px var(--frame-dark);
 }
 .scene::before{
-  content:"";position:absolute;left:0;right:0;top:32%;height:14%;
-  background:repeating-linear-gradient(90deg,#3e8a4a 0 26px, #347a40 26px 52px);
-  clip-path:polygon(0 100%,0 40%,4% 10%,8% 45%,12% 5%,16% 42%,20% 12%,24% 48%,28% 8%,32% 44%,36% 14%,40% 46%,44% 6%,48% 42%,52% 12%,56% 47%,60% 9%,64% 44%,68% 15%,72% 46%,76% 7%,80% 43%,84% 13%,88% 47%,92% 9%,96% 44%,100% 35%,100% 100%);
-  opacity:.85;
+  content:"";position:absolute;left:0;right:0;top:var(--ridge-top);height:var(--ridge-h);
+  background:repeating-linear-gradient(90deg,var(--bk1) 0 26px, var(--bk2) 26px 52px);
+  clip-path:var(--ridge-shape);
+  opacity:var(--ridge-op);
 }
-.platform{position:absolute;border-radius:50%;background:radial-gradient(closest-side,#8ad05e,#6cb648 70%,#5aa83c);box-shadow:inset 0 3px 0 rgba(255,255,255,.25), 0 3px 0 rgba(0,0,0,.12)}
+.platform{position:absolute;border-radius:50%;background:radial-gradient(closest-side,var(--plat1),var(--plat2) 70%,var(--plat3));box-shadow:inset 0 3px 0 rgba(255,255,255,.25), 0 3px 0 rgba(0,0,0,.12)}
+
+/* ---------- area themes (scene + grass strip) ---------- */
+.t-forest{--sky1:#86c074;--sky2:#aad898;--gnd1:#5a9a48;--gnd2:#4c8a3c;--gnd3:#3a7230;
+  --bk1:#2c6634;--bk2:#235a2b;--ridge-top:18%;--ridge-h:26%;
+  --plat1:#61a050;--plat2:#529244;--plat3:#447e38;--tuft1:#1f5e28;--tuft2:#194e21}
+.t-cave{--sky1:#4a3c55;--sky2:#5b4a66;--gnd1:#7a6488;--gnd2:#6a5578;--gnd3:#574668;
+  --bk1:#352a40;--bk2:#2c2235;--ridge-top:0%;--ridge-h:20%;--ridge-shape:var(--shape-spikes);--ridge-op:1;
+  --plat1:#8a7398;--plat2:#75618a;--plat3:#615078;--tuft1:#4e4058;--tuft2:#443a4e}
+.t-meadow{--sky1:#8fd8f8;--sky2:#c3ecfc;--gnd1:#a8dc6e;--gnd2:#8cca58;--gnd3:#70b444;
+  --bk1:#5aa868;--bk2:#4c9658;--ridge-top:24%;--ridge-h:22%;--ridge-shape:var(--shape-peaks);
+  --plat1:#9cd86a;--plat2:#84c454;--plat3:#6cae40}
+.t-docks{--sky1:#9adcf2;--sky2:#d4f0fa;--gnd1:#c89858;--gnd2:#b08048;--gnd3:#96683a;
+  --bk1:#3a8ac0;--bk2:#2f78ac;--ridge-top:36%;--ridge-h:11%;--ridge-shape:var(--shape-band);--ridge-op:1;
+  --plat1:#c8a060;--plat2:#b08850;--plat3:#987040;--tuft1:#2f78ac;--tuft2:#2a6c9c}
+.t-tunnel{--sky1:#2c2530;--sky2:#3a3140;--gnd1:#5c5260;--gnd2:#4c4450;--gnd3:#3c3640;
+  --bk1:#201a26;--bk2:#181420;--ridge-top:0%;--ridge-h:22%;--ridge-shape:var(--shape-spikes);--ridge-op:1;
+  --plat1:#6a5e70;--plat2:#584e60;--plat3:#484050;--tuft1:#38303e;--tuft2:#302a36}
+.t-city{--sky1:#a0d8ec;--sky2:#dcf2f8;--gnd1:#c0c4d0;--gnd2:#a8acb8;--gnd3:#8e92a0;
+  --bk1:#7888a0;--bk2:#68788e;--ridge-top:18%;--ridge-h:28%;--ridge-shape:var(--shape-skyline);--ridge-op:.9;
+  --plat1:#c8ccd8;--plat2:#b0b4c0;--plat3:#989cab;--tuft1:#3f8a4a;--tuft2:#357a40}
+.t-safari{--sky1:#ffd98a;--sky2:#ffeec2;--gnd1:#d8c878;--gnd2:#c0b060;--gnd3:#a89848;
+  --bk1:#8a9a4a;--bk2:#7a8a40;
+  --plat1:#e0d088;--plat2:#c8b870;--plat3:#b0a058;--tuft1:#9a8a3a;--tuft2:#8a7c32}
+.t-sea{--sky1:#9adcf2;--sky2:#d2f0fa;--gnd1:#58a8e0;--gnd2:#4292d0;--gnd3:#327fc0;
+  --bk1:#6ab8e8;--bk2:#5aa8da;--ridge-top:36%;--ridge-h:11%;--ridge-shape:var(--shape-band);--ridge-op:1;
+  --plat1:#eef8fc;--plat2:#cfe6f2;--plat3:#b2d6e8;--tuft1:#3a88c8;--tuft2:#3278b4}
+.t-volcano{--sky1:#4a2830;--sky2:#6e3438;--gnd1:#ff8a48;--gnd2:#803a30;--gnd3:#581f1c;
+  --bk1:#38201e;--bk2:#2e1a18;--ridge-top:18%;--ridge-h:28%;--ridge-shape:var(--shape-peaks);--ridge-op:1;
+  --plat1:#8a4438;--plat2:#763830;--plat3:#602c26;--tuft1:#5e2a22;--tuft2:#50241e}
+.t-mountain{--sky1:#b8ccdc;--sky2:#dde8ee;--gnd1:#9a8e84;--gnd2:#867a70;--gnd3:#6e645c;
+  --bk1:#5e6e80;--bk2:#506072;--ridge-top:16%;--ridge-h:30%;--ridge-shape:var(--shape-peaks);--ridge-op:.95;
+  --plat1:#a89a8e;--plat2:#92867a;--plat3:#7c7268;--tuft1:#5c5248;--tuft2:#4e463e}
+.t-mystic{--sky1:#2c2348;--sky2:#3c3060;--gnd1:#5a4a80;--gnd2:#4c3e6e;--gnd3:#3c305a;
+  --bk1:#221a38;--bk2:#1a1430;--ridge-top:0%;--ridge-h:22%;--ridge-shape:var(--shape-spikes);--ridge-op:1;
+  --plat1:#6a5890;--plat2:#5a4a7e;--plat3:#4a3c68;--tuft1:#352a52;--tuft2:#2d2346}
 .platform.enemy-p{width:240px;height:64px;right:42px;top:158px}
 .platform.player-p{width:280px;height:74px;left:26px;bottom:8px}
 .zone-tag{
@@ -215,16 +260,17 @@ main{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
 
 /* ---------- catch panel ---------- */
 .grass-strip{
+  --sky1:#8ed4f2;--sky2:#cdeefb;--gnd2:#7ec452;--gnd3:#63ad3c;--tuft1:#2f8a3a;--tuft2:#267a30;
   position:relative;border-radius:6px;min-height:215px;overflow:hidden;
-  background:linear-gradient(180deg,#8ed4f2 0%, #cdeefb 40%, #7ec452 41%, #63ad3c 100%);
+  background:linear-gradient(180deg,var(--sky1) 0%, var(--sky2) 40%, var(--gnd2) 41%, var(--gnd3) 100%);
   box-shadow:inset 0 0 0 3px var(--frame-dark);
   display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;
 }
 .grass-strip::after{
   content:"";position:absolute;left:0;right:0;bottom:0;height:54px;z-index:5;pointer-events:none;
   background:
-   repeating-linear-gradient(90deg, transparent 0 6px, rgba(28,92,32,.55) 6px 9px, transparent 9px 18px),
-   repeating-linear-gradient(90deg,#2f8a3a 0 18px, #267a30 18px 36px);
+   repeating-linear-gradient(90deg, transparent 0 6px, rgba(20,24,32,.35) 6px 9px, transparent 9px 18px),
+   repeating-linear-gradient(90deg,var(--tuft1) 0 18px, var(--tuft2) 18px 36px);
   clip-path:polygon(0 100%,0 30%,3% 60%,6% 25%,9% 62%,12% 28%,15% 60%,18% 22%,21% 58%,24% 30%,27% 62%,30% 24%,33% 60%,36% 28%,39% 58%,42% 22%,45% 62%,48% 28%,51% 58%,54% 24%,57% 60%,60% 28%,63% 58%,66% 22%,69% 62%,72% 28%,75% 58%,78% 24%,81% 60%,84% 28%,87% 58%,90% 22%,93% 62%,96% 28%,100% 55%,100% 100%);
 }
 .grass-strip.rustle::after{animation:rustle .5s steps(2) infinite}
@@ -580,6 +626,8 @@ const ZONES=[
 {name:"Victory Road",lvl:67,pool:[147,143,144,145,146],dex:102,cost:8e7},
 {name:"Cerulean Cave",lvl:75,pool:[1,4,7,150,151],dex:118,cost:3e8},
 ];
+/* visual theme per zone, matching its geography */
+const ZONE_THEMES=["route","forest","cave","meadow","docks","tunnel","city","safari","sea","volcano","mountain","mystic"];
 const TIER_WEIGHT=[0,46,28,16,7,1.6];
 const TIER_CATCH=[0,.55,.35,.20,.09,.025];
 const BALLS={
@@ -1032,10 +1080,13 @@ function wildTick(){
 }
 
 /* ===================== ZONES ===================== */
+function applyTheme(){
+  $("scene").className="scene t-"+ZONE_THEMES[state.zone];
+}
 function tryZone(i){
   const z=ZONES[i];
   if(state.unlocked[i]){
-    if(state.zone!==i){state.zone=i;spawnEnemy();$("zoneTag").textContent=z.name.toUpperCase();
+    if(state.zone!==i){state.zone=i;applyTheme();spawnEnemy();$("zoneTag").textContent=z.name.toUpperCase();
       log(`You travel to <b>${z.name}</b>.`);enc=null;dirty=true;renderTab();}
     return;
   }
@@ -1069,7 +1120,7 @@ function catchHtml(){
   let inner;
   if(enc){
     inner=`
-    <div class="grass-strip" id="grassStrip">
+    <div class="grass-strip t-${ZONE_THEMES[state.zone]}" id="grassStrip">
       <img id="wildSprite" class="appear" alt="wild pokemon">
       <div id="thrownBall" class="pokeball"></div>
     </div>
@@ -1090,8 +1141,8 @@ function catchHtml(){
     </div>`;
   }else{
     inner=`
-    <div class="grass-strip" id="grassStrip">
-      <div style="z-index:4;margin-bottom:60px;font-family:'Press Start 2P';font-size:10px;color:rgba(20,40,16,.65);text-align:center;line-height:2">
+    <div class="grass-strip t-${ZONE_THEMES[state.zone]}" id="grassStrip">
+      <div style="z-index:4;margin-bottom:60px;font-family:'Press Start 2P';font-size:10px;color:rgba(20,40,16,.65);text-align:center;line-height:2;text-shadow:0 0 4px rgba(255,255,255,.5)">
         …the grass is quiet…
       </div>
     </div>
@@ -1380,6 +1431,7 @@ function init(){
   window.addEventListener("beforeunload",save);
 
   $("zoneTag").textContent=zone().name.toUpperCase();
+  applyTheme();
   spawnEnemy();
 
   if(!state.party.length){
