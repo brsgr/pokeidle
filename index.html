@@ -503,6 +503,14 @@ main{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
   </main>
 </div>
 
+<div class="modal-veil" id="tutorModal" style="display:none">
+  <div class="winbox" style="max-width:480px;width:100%">
+    <h2 style="font-family:'Press Start 2P';font-size:11px;color:var(--blue-dk);margin-bottom:10px;line-height:1.6" id="tutorTitle">MOVE TUTOR</h2>
+    <div id="tutorBody"></div>
+    <div style="text-align:right;margin-top:12px"><button class="btn" id="tutorClose" style="font-size:9px">CANCEL</button></div>
+  </div>
+</div>
+
 <div class="modal-veil" id="evoModal" style="display:none">
   <div class="winbox evo-box" id="evoBox">
     <h2>✨ EVOLUTION ✨</h2>
@@ -612,6 +620,7 @@ thunder:{name:"Thunder Stone",icon:"⚡",cost:25e3,desc:"Evolves Pikachu, Eevee.
 leaf:{name:"Leaf Stone",icon:"🍃",cost:25e3,desc:"Evolves Gloom, Weepinbell, Exeggcute."},
 moon:{name:"Moon Stone",icon:"🌙",cost:4e4,desc:"Evolves Nidorina, Nidorino, Clefairy, Jigglypuff."},
 link:{name:"Link Cable",icon:"🔗",cost:12e4,desc:"Trade-evolves Kadabra, Machoke, Graveler, Haunter."},
+tutor:{name:"Move Tutor",icon:"📖",cost:1e4,desc:"Teach a Pokémon any move its form can know at its level — including forgotten ones."},
 };
 
 const ZONES=[
@@ -676,7 +685,7 @@ function setSprite(img,url,fallbackId){
 const SAVE_KEY="pokeidle-kanto-v1";
 let state=null;
 function freshState(){return{
-  money:0,balls:{poke:5,great:0,ultra:0,master:0},items:{fire:0,water:0,thunder:0,leaf:0,moon:0,link:0},
+  money:0,balls:{poke:5,great:0,ultra:0,master:0},items:{fire:0,water:0,thunder:0,leaf:0,moon:0,link:0,tutor:0},
   upg:{},zone:0,unlocked:[true],
   party:[],active:0,pc:[],caught:{},
   stats:{kos:0,catches:0,clicks:0,start:Date.now()},
@@ -687,7 +696,7 @@ function load(){
   try{const raw=localStorage.getItem(SAVE_KEY);state=raw?Object.assign(freshState(),JSON.parse(raw)):freshState();}
   catch(e){state=freshState();}
   // migrations / fixups for older saves
-  state.items=Object.assign({fire:0,water:0,thunder:0,leaf:0,moon:0,link:0},state.items||{});
+  state.items=Object.assign({fire:0,water:0,thunder:0,leaf:0,moon:0,link:0,tutor:0},state.items||{});
   state.balls=Object.assign({poke:5,great:0,ultra:0,master:0},state.balls||{});
   [...state.party,...state.pc].forEach(initMoves);
 }
@@ -763,6 +772,60 @@ function learnAtLevel(mon){
     if(state.party.includes(mon))log(`${dexName(mon.id)} learned <b>${M[mi][0].toUpperCase()}</b>!`);
     movesDirty=true;
   }
+}
+/* ---------- Move Tutor ---------- */
+let tutorTarget=null,tutorPick=null;
+/* every damaging move this form can know at its current level */
+function tutorMoves(mon){
+  const seen=new Set(),out=[];
+  for(const[l,mi]of MD[mon.id].lm){if(l<=mon.lvl&&!seen.has(mi)){seen.add(mi);out.push(mi);}}
+  return out;
+}
+function openTutor(pi){
+  tutorTarget=state.party[pi];tutorPick=null;
+  renderTutor();
+  $("tutorModal").style.display="flex";
+}
+function closeTutor(){tutorTarget=null;tutorPick=null;$("tutorModal").style.display="none";}
+function renderTutor(){
+  const mon=tutorTarget,body=$("tutorBody");
+  if(!mon){body.innerHTML="";return;}
+  const moveBtn=(mi,attr,i)=>{const mv=M[mi];return `<button class="move-btn" ${attr}="${i}">
+      <span class="mv-nm">${mv[0]}</span>
+      <span class="mv-meta">${typeBadge(mv[1],true)}<span>POW ${mv[2]}</span></span></button>`;};
+  if(tutorPick==null){
+    $("tutorTitle").textContent="MOVE TUTOR — "+dexName(mon.id).toUpperCase()+" Lv"+mon.lvl;
+    const opts=tutorMoves(mon).filter(mi=>!mon.moves.includes(mi));
+    body.innerHTML=opts.length
+      ?`<div style="font-size:18px;color:#777;margin-bottom:8px">Pick a move to teach (uses 1 Move Tutor):</div>
+        <div class="move-menu" style="margin-top:0;max-height:300px;overflow-y:auto">${opts.map(mi=>moveBtn(mi,"data-tmove",mi)).join("")}</div>`
+      :`<div style="font-size:19px;color:#777">${dexName(mon.id)} already knows every move it can learn at this level!</div>`;
+    body.querySelectorAll("[data-tmove]").forEach(b=>b.onclick=()=>{
+      tutorPick=+b.dataset.tmove;
+      const si=mon.moves.indexOf(STRUGGLE);
+      if(si>=0)applyTutor(si);
+      else if(mon.moves.length<4)applyTutor(-1);
+      else renderTutor();
+    });
+  }else{
+    body.innerHTML=`<div style="font-size:18px;color:#777;margin-bottom:8px">Teach <b>${M[tutorPick][0]}</b> — forget which move?</div>
+      <div class="move-menu" style="margin-top:0">${mon.moves.map((mi,i)=>moveBtn(mi,"data-fmove",i)).join("")}</div>`;
+    body.querySelectorAll("[data-fmove]").forEach(b=>b.onclick=()=>applyTutor(+b.dataset.fmove));
+  }
+}
+function applyTutor(slot){
+  const mon=tutorTarget;
+  if(!mon||tutorPick==null||state.items.tutor<=0){closeTutor();return;}
+  state.items.tutor--;
+  if(slot>=0){
+    const old=mon.moves[slot];mon.moves[slot]=tutorPick;
+    log(`${dexName(mon.id)} forgot ${M[old][0]} and learned <b>${M[tutorPick][0].toUpperCase()}</b>!`);
+  }else{
+    mon.moves.push(tutorPick);
+    log(`${dexName(mon.id)} learned <b>${M[tutorPick][0].toUpperCase()}</b>!`);
+  }
+  sfx.lvl();movesDirty=true;dirty=true;
+  closeTutor();renderTab();
 }
 
 /* ===================== AUDIO ===================== */
@@ -1206,6 +1269,7 @@ function partyHtml(){
           <div class="bar exp" style="height:7px"><div class="fill" style="width:${m.lvl>=100?100:Math.min(100,m.exp/toNext(m.lvl)*100)}%"></div></div>
           ${hint?`<div class="pc-hint">${hint}</div>`:""}
           ${evoOptions(m).map(o=>`<button class="evo-btn" data-evo="${i}:${o.it}:${o.to}">✨ USE ${o.label.toUpperCase()}</button>`).join(" ")}
+          ${state.items.tutor>0?`<button class="evo-btn" data-tutor="${i}" style="background:linear-gradient(180deg,#7ec0f0,#3466af);text-shadow:1px 1px 0 var(--blue-dk)">📖 TUTOR</button>`:""}
         </div>
         ${state.party.length>1?`<button class="boxit" data-box="${i}" title="send to PC">PC▾</button>`:""}
       </div>`;}).join("")}
@@ -1252,7 +1316,7 @@ function martHtml(){
         <button class="buy" data-buyball="${k}" ${state.money<b.cost?"disabled":""}>₽${fmt(b.cost)}</button>
         <button class="buy" data-buyball10="${k}" ${state.money<b.cost*10?"disabled":""}>x10</button>
       </div>`).join("")}
-    <div class="mart-sep">▸ EVOLUTION ITEMS</div>
+    <div class="mart-sep">▸ ITEMS</div>
     ${Object.entries(ITEMS).map(([k,it])=>`
       <div class="mart-item">
         <span style="font-size:24px">${it.icon}</span>
@@ -1280,7 +1344,7 @@ function bindTab(){
   document.querySelectorAll("[data-ball]").forEach(b=>b.onclick=()=>throwBall(b.dataset.ball));
   document.querySelectorAll("[data-zone]").forEach(b=>b.onclick=()=>tryZone(+b.dataset.zone));
   document.querySelectorAll("[data-pi]").forEach(c=>c.onclick=e=>{
-    if(e.target.dataset.box!==undefined||e.target.dataset.evo!==undefined)return;
+    if(e.target.dataset.box!==undefined||e.target.dataset.evo!==undefined||e.target.dataset.tutor!==undefined)return;
     state.active=+c.dataset.pi;refreshPlayerSprite();updatePlayerPanel();renderTab();sfx.click();movesDirty=true;dirty=true;
   });
   document.querySelectorAll("[data-box]").forEach(b=>b.onclick=e=>{
@@ -1305,6 +1369,10 @@ function bindTab(){
     state.items[it]--;
     evolveMonTo(mon,+to);
     renderTab();updateHud();
+  });
+  document.querySelectorAll("[data-tutor]").forEach(b=>b.onclick=e=>{
+    e.stopPropagation();
+    if(state.items.tutor>0)openTutor(+b.dataset.tutor);
   });
   document.querySelectorAll("[data-buyball]").forEach(b=>b.onclick=()=>buyBall(b.dataset.buyball,1));
   document.querySelectorAll("[data-buyball10]").forEach(b=>b.onclick=()=>buyBall(b.dataset.buyball10,10));
@@ -1431,6 +1499,8 @@ function init(){
       localStorage.removeItem(SAVE_KEY);location.reload();
     }};
   $("evoModal").onclick=()=>{clearEvoTimers();playNextEvo();};
+  $("tutorClose").onclick=closeTutor;
+  $("tutorModal").addEventListener("click",e=>{if(e.target.id==="tutorModal")closeTutor();});
   $("trainBtn").onclick=clickAttack;
   $("swapFoe").onclick=()=>{if(!enemyDead){spawnEnemy();sfx.click();}};
   $("scene").addEventListener("click",e=>{if(e.target.id==="enemySprite")clickAttack();});
