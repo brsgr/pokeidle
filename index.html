@@ -1376,11 +1376,15 @@ document.querySelectorAll(".tab-btn").forEach(b=>{
 });
 function renderTab(){
   const t=state.tab,el=$("tabContent");
+  /* keep scrollable lists where they were instead of snapping to top on re-render */
+  const scrolls=[".mart-list",".dex-grid",".zone-list"]
+    .map(s=>{const n=el.querySelector(s);return n&&n.scrollTop?[s,n.scrollTop]:null;}).filter(Boolean);
   if(t==="catch")el.innerHTML=catchHtml();
   else if(t==="party")el.innerHTML=partyHtml();
   else if(t==="dex")el.innerHTML=dexHtml();
   else el.innerHTML=martHtml();
   bindTab();
+  scrolls.forEach(([s,top])=>{const n=el.querySelector(s);if(n)n.scrollTop=top;});
 }
 function ballIco(color){return `<span class="pokeball" style="--bt:${color}"></span>`;}
 
