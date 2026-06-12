@@ -491,7 +491,6 @@ main{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
           </div>
         </div>
         <div class="battle-controls">
-          <button class="btn primary big" id="trainBtn">⚔ TRAIN!</button>
           <button class="btn" id="swapFoe" title="find a different sparring partner" style="font-size:9px">SWAP<br>FOE</button>
         </div>
         <div class="gym-panel" id="gymPanel"></div>
@@ -1704,13 +1703,8 @@ function init(){
   $("evoModal").onclick=()=>{clearEvoTimers();playNextEvo();};
   $("tutorClose").onclick=closeTutor;
   $("tutorModal").addEventListener("click",e=>{if(e.target.id==="tutorModal")closeTutor();});
-  $("trainBtn").onclick=clickAttack;
   $("swapFoe").onclick=()=>{if(gym){sfx.deny();return;}if(!enemyDead){spawnEnemy();sfx.click();}};
-  $("scene").addEventListener("click",e=>{if(e.target.id==="enemySprite")clickAttack();});
   window.addEventListener("keydown",e=>{
-    if(e.code==="Space"&&!e.repeat&&!e.target.matches("button,input")){
-      e.preventDefault();clickAttack();
-    }
     if(/^Digit[1-4]$/.test(e.code)&&!e.target.matches("input")){
       const act=activeMon();
       const idx=+e.code.slice(5)-1;
