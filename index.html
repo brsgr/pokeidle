@@ -1710,7 +1710,7 @@ function init(){
   $("evoModal").onclick=()=>{clearEvoTimers();playNextEvo();};
   $("tutorClose").onclick=closeTutor;
   $("tutorModal").addEventListener("click",e=>{if(e.target.id==="tutorModal")closeTutor();});
-  /* hold-to-train: attacks once on press, then repeats while held (~4.7 attacks/sec) */
+  /* hold-to-train: attacks once on press, then repeats while held (~3.6 attacks/sec) */
   {
     const btn=$("trainBtn");
     let holdDelay=null,holdRepeat=null;
@@ -1719,7 +1719,7 @@ function init(){
       e.preventDefault();
       stopHold();
       clickAttack();
-      holdDelay=setTimeout(()=>{holdRepeat=setInterval(clickAttack,215);},300);
+      holdDelay=setTimeout(()=>{holdRepeat=setInterval(clickAttack,280);},300);
     });
     ["pointerup","pointerleave","pointercancel"].forEach(ev=>btn.addEventListener(ev,stopHold));
     btn.addEventListener("contextmenu",e=>e.preventDefault());
