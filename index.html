@@ -199,6 +199,7 @@ main{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
 .btn.primary{background:linear-gradient(180deg,#ff6a4d,var(--red) 55%);color:#fff;text-shadow:1px 1px 0 var(--red-dk)}
 .btn.blue{background:linear-gradient(180deg,#6fa3e8,var(--blue) 55%);color:#fff;text-shadow:1px 1px 0 var(--blue-dk)}
 .btn.big{font-size:14px;padding:18px 26px 16px;flex:1}
+#trainBtn{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .stat-strip{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;font-size:18px;color:#5a5a6e}
 .stat-strip b{color:var(--ink)}
 
@@ -1705,7 +1706,21 @@ function init(){
   $("evoModal").onclick=()=>{clearEvoTimers();playNextEvo();};
   $("tutorClose").onclick=closeTutor;
   $("tutorModal").addEventListener("click",e=>{if(e.target.id==="tutorModal")closeTutor();});
-  $("trainBtn").onclick=clickAttack;
+  /* hold-to-train: attacks once on press, then repeats at ~average human mash speed */
+  {
+    const btn=$("trainBtn");
+    let holdDelay=null,holdRepeat=null;
+    const stopHold=()=>{clearTimeout(holdDelay);clearInterval(holdRepeat);holdDelay=holdRepeat=null;};
+    btn.addEventListener("pointerdown",e=>{
+      e.preventDefault();
+      stopHold();
+      clickAttack();
+      holdDelay=setTimeout(()=>{holdRepeat=setInterval(clickAttack,150);},300);
+    });
+    ["pointerup","pointerleave","pointercancel"].forEach(ev=>btn.addEventListener(ev,stopHold));
+    btn.addEventListener("contextmenu",e=>e.preventDefault());
+    btn.addEventListener("click",e=>{if(e.detail===0)clickAttack();}); /* keyboard (Enter/Space) */
+  }
   $("swapFoe").onclick=()=>{if(gym){sfx.deny();return;}if(!enemyDead){spawnEnemy();sfx.click();}};
   window.addEventListener("keydown",e=>{
     if(/^Digit[1-4]$/.test(e.code)&&!e.target.matches("input")){
