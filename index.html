@@ -666,7 +666,7 @@ const GYMS=[
 {leader:"Brock",gymName:"Pewter Gym",badge:"Boulder",type:"rock",zone:1,reward:5e3,
  perk:"+25% move damage",team:[[74,11],[95,13]]},
 {leader:"Misty",gymName:"Cerulean Gym",badge:"Cascade",type:"water",zone:2,reward:2e4,
- perk:"+20% catch chance",team:[[120,15],[121,17]]},
+ perk:"+20% catch chance",team:[[120,15],[72,16],[121,18]]},
 {leader:"Lt. Surge",gymName:"Vermilion Gym",badge:"Thunder",type:"electric",zone:4,reward:1e5,
  perk:"+25% auto-attack speed",team:[[100,25],[25,26],[26,28]]},
 {leader:"Erika",gymName:"Celadon Gym",badge:"Rainbow",type:"grass",zone:6,reward:1e6,
@@ -680,7 +680,11 @@ const GYMS=[
 {leader:"Giovanni",gymName:"Viridian Gym",badge:"Earth",type:"ground",zone:10,reward:2e8,
  perk:"+50% move damage",team:[[111,70],[51,71],[31,72],[34,74]]},
 ];
-const GYM_HP_MULT=4, GYM_ATK_MULT=4, GYM_ATK_INTERVAL=2000;
+const GYM_HP_MULT=5, GYM_ATK_MULT=4, GYM_ATK_INTERVAL=2000;
+/* gym aura damage scale by matchup, plus an enrage ramp so leaders can't be
+   tanked out forever by an overleveled wrong-type pick */
+const GYM_AURA_NEUTRAL=.75, GYM_AURA_RESIST=.35;
+const GYM_ENRAGE_EVERY=20000, GYM_ENRAGE_STEP=.25;
 /* visual theme per zone, matching its geography */
 const ZONE_THEMES=["route","forest","cave","meadow","docks","tunnel","city","safari","sea","volcano","mountain","mystic"];
 const SEARCH_FLAVOR={
@@ -805,7 +809,10 @@ function moveDamage(mon,mi,defTypes){
   const base=mon.lvl*2*(1+lv("macho"))*(1+(hasBadge(0)?.25:0)+(hasBadge(7)?.5:0));
   const stab=dexTypes(mon.id).includes(mv[1])?1.5:1;
   const eff=effMult(mv[1],defTypes);
-  return{dmg:eff===0?0:Math.max(1,Math.round(base*(mv[2]/50)*stab*eff)),eff,mv};
+  /* gym aura: leaders' Pokémon shrug off anything that isn't super effective,
+     so badges can't be brute-forced with a wrong-type powerhouse */
+  const aura=gym?(eff>1?1:eff===1?GYM_AURA_NEUTRAL:GYM_AURA_RESIST):1;
+  return{dmg:eff===0?0:Math.max(1,Math.round(base*(mv[2]/50)*stab*eff*aura)),eff,mv};
 }
 function bestMoveIdx(mon,defTypes){
   let bi=mon.moves[0],bd=-1;
@@ -995,13 +1002,13 @@ function defeatEnemy(){
 }
 
 /* ===================== GYM BATTLES ===================== */
-let gym=null; // {gi, idx, partyHp:[], nextAtkAt}
+let gym=null; // {gi, idx, partyHp:[], nextAtkAt, startedAt, enrage}
 const gymForZone=i=>GYMS.findIndex(g=>g.zone===i);
 function startGym(gi){
   if(gym||!state.party.length)return;
   const g=GYMS[gi];
-  gym={gi,idx:0,partyHp:state.party.map(m=>monMaxHp(m.lvl)),nextAtkAt:Date.now()+GYM_ATK_INTERVAL+500};
-  log(`🏅 You challenge <b>${g.leader}</b> of ${g.gymName}! ${g.leader} sends out ${g.team.length} Pokémon — your whole party fights, and they fight back!`);
+  gym={gi,idx:0,partyHp:state.party.map(m=>monMaxHp(m.lvl)),nextAtkAt:Date.now()+GYM_ATK_INTERVAL+500,startedAt:Date.now(),enrage:0};
+  log(`🏅 You challenge <b>${g.leader}</b> of ${g.gymName}! ${g.leader} sends out ${g.team.length} Pokémon — your whole party fights, and they fight back! Their gym aura weakens moves that aren't super effective.`);
   sfx.lvl();
   gymSpawnNext();
   renderGymPanel();updatePlayerHpUI();movesDirty=true;
@@ -1033,7 +1040,12 @@ function leaderBestHit(foe,defTypes){
 function leaderAttack(){
   const act=activeMon();
   if(!act)return;
-  const dmg=leaderBestHit(enemy,dexTypes(act.id));
+  const stacks=Math.floor((Date.now()-gym.startedAt)/GYM_ENRAGE_EVERY);
+  if(stacks>gym.enrage){
+    gym.enrage=stacks;
+    log(`🔥 ${GYMS[gym.gi].leader}'s team fights harder! (+${Math.round(stacks*GYM_ENRAGE_STEP*100)}% attack)`);
+  }
+  const dmg=Math.round(leaderBestHit(enemy,dexTypes(act.id))*(1+gym.enrage*GYM_ENRAGE_STEP));
   gym.partyHp[state.active]-=dmg;
   const ps=$("playerSprite");ps.classList.remove("hit");void ps.offsetWidth;ps.classList.add("hit");
   floatText("-"+fmt(dmg),"dmg-float",110+rnd(80),170+rnd(40));
@@ -1105,7 +1117,7 @@ function renderGymPanel(){
     const dots=g.team.map((_,i)=>i<gym.idx?"○":"●").join(" ");
     el.innerHTML=`<div class="gym-row">
       <span class="gym-nm">🏅 VS ${g.leader.toUpperCase()} ${typeBadge(g.type,true)} &nbsp;${dots}
-        <span class="gym-perk">Switch Pokémon from the PARTY tab to exploit type matchups!</span></span>
+        <span class="gym-perk">Gym aura: only super-effective moves hit at full power! Switch Pokémon from the PARTY tab — and hurry, the leader fights harder over time.</span></span>
       <button class="btn" id="gymBtn" style="font-size:9px">FORFEIT</button></div>`;
   }else{
     const won=hasBadge(gi);
