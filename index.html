@@ -733,7 +733,8 @@ function freshState(){return{
   stats:{kos:0,catches:0,clicks:0,start:Date.now()},
   muted:false,tab:"catch",lastSeen:Date.now()
 };}
-function save(){state.lastSeen=Date.now();try{localStorage.setItem(SAVE_KEY,JSON.stringify(state));}catch(e){}}
+let resetting=false; // blocks saves (incl. beforeunload) once NEW GAME wipes the slot
+function save(){if(resetting)return;state.lastSeen=Date.now();try{localStorage.setItem(SAVE_KEY,JSON.stringify(state));}catch(e){}}
 function load(){
   try{const raw=localStorage.getItem(SAVE_KEY);state=raw?Object.assign(freshState(),JSON.parse(raw)):freshState();}
   catch(e){state=freshState();}
@@ -1698,7 +1699,7 @@ function init(){
   $("muteBtn").onclick=()=>{state.muted=!state.muted;$("muteBtn").textContent=state.muted?"♪ OFF":"♪ ON";save();};
   $("resetBtn").onclick=()=>{
     if(confirm("Erase your save and start a brand-new adventure?")){
-      localStorage.removeItem(SAVE_KEY);location.reload();
+      resetting=true;localStorage.removeItem(SAVE_KEY);location.reload();
     }};
   $("evoModal").onclick=()=>{clearEvoTimers();playNextEvo();};
   $("tutorClose").onclick=closeTutor;
